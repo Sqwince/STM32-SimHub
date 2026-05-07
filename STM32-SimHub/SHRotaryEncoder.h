@@ -2,7 +2,8 @@
 #define __SHROTARYENCODER_H__
 
 #include <Arduino.h>
-#include "SHFastIO.h"
+//#include "SHFastIO.h"
+#include "STM32_FastIO.h"
 #include "SHDebouncer.h"
 
 #define R_START	   0x0

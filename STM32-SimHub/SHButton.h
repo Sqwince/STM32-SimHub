@@ -2,7 +2,8 @@
 #define __SHBUTTON_H__
 
 #include <Arduino.h>
-#include "SHFastIO.h"
+//#include "SHFastIO.h"
+#include "STM32_FastIO.h"
 
 typedef void(*SHButtonChanged) (int, byte);
 
