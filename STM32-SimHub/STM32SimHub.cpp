@@ -11,7 +11,7 @@ void GenerateDeviceUUID()
     // Pure contiguous hex string (USB-safe, Windows-safe)
     snprintf(DEVICE_UNIQUE_ID,
              sizeof(DEVICE_UNIQUE_ID),
-             "%08lX-%08lX-%08lX", //"%08lX%08lX%08lX",
+             "%08lX%08lX%08lX", //"%08lX-%08lX-%08lX", //"%08lX%08lX%08lX",
              uid0,
              uid1,
              uid2);

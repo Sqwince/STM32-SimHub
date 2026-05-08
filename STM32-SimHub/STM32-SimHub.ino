@@ -46,7 +46,7 @@
 //#define INCLUDE_SHAKEITPWM                  //{"Name":"INCLUDE_SHAKEITPWM","Type":"autodefine","Condition":"[SHAKEITPWM_ENABLED_MOTORS]>0"}
 //#define INCLUDE_SHAKEITPWMFANS              //{"Name":"INCLUDE_SHAKEITPWMFANS","Type":"autodefine","Condition":"[SHAKEITPWMFANS_ENABLED_MOTORS]>0"}
 #if defined (__AVR_ATmega32U4__) //|| defined(ARDUINO_OPENFFBOARD_F407VG)
-#define INCLUDE_GAMEPAD                       //{"Name":"INCLUDE_GAMEPAD","Type":"autodefine","Condition":"[ENABLE_MICRO_GAMEPAD]>0"}
+//#define INCLUDE_GAMEPAD                       //{"Name":"INCLUDE_GAMEPAD","Type":"autodefine","Condition":"[ENABLE_MICRO_GAMEPAD]>0"}
 #endif
 //#define INCLUDE_GAMEPADAXIS                 //{"Name":"INCLUDE_GAMEPADAXIS","Type":"autodefine","Condition":"[GAMEPAD_AXIS_01_ENABLED]>0 || [GAMEPAD_AXIS_02_ENABLED]>0 || [GAMEPAD_AXIS_03_ENABLED]>0"}
 
@@ -56,8 +56,8 @@
 #endif // ! INCLUDE_GAMEPAD
 #endif
 
-#define INCLUDE_ENCODERS                      //{"Name":"INCLUDE_ENCODERS","Type":"autodefine","Condition":"[ENABLED_ENCODERS_COUNT]>0","IsInput":true}
-#define INCLUDE_BUTTONS                       //{"Name":"INCLUDE_BUTTONS","Type":"autodefine","Condition":"[ENABLED_BUTTONS_COUNT]>0","IsInput":true}
+//#define INCLUDE_ENCODERS                      //{"Name":"INCLUDE_ENCODERS","Type":"autodefine","Condition":"[ENABLED_ENCODERS_COUNT]>0","IsInput":true}
+//#define INCLUDE_BUTTONS                       //{"Name":"INCLUDE_BUTTONS","Type":"autodefine","Condition":"[ENABLED_BUTTONS_COUNT]>0","IsInput":true}
 //#define INCLUDE_BUTTONMATRIX                //{"Name":"INCLUDE_BUTTONMATRIX","Type":"autodefine","Condition":"[ENABLED_BUTTONMATRIX]>0","IsInput":true}
 //#define INCLUDE_DM163_MATRIX                //{"Name":"INCLUDE_DM163_MATRIX","Type":"autodefine","Condition":"[DM163_MATRIX_ENABLED]>0"}
 //#define INCLUDE_SUNFOUNDERSH104P_MATRIX     //{"Name":"INCLUDE_SUNFOUNDERSH104P_MATRIX","Type":"autodefine","Condition":"[SUNFOUNDERSH104P_MATRIX_ENABLED]>0"}
@@ -71,22 +71,24 @@
 #include <avr/pgmspace.h>
 #include <Wire.h>
 //#include "Adafruit_GFX.h"   //TODO: library not found on compile, disable for now
+//#include "FlowSerialRead.h" //Replaced with STM32 version below
 
 //STM32 Includes
 #include "STM32SimHub.h"
+#include "STM32FlowSerialRead.h"
 
-#include "FlowSerialRead.h"
 #include "setPwmFrequency.h"
 #include "SHDebouncer.h"
 #include "SHButton.h"
 
 // ----------------------------------------------------- HW SETTINGS, PLEASE REVIEW ALL -------------------------------------------
-#define DEVICE_NAME "STM32-SimHub Device" //{"Group":"General","Name":"DEVICE_NAME","Title":"Device name,\r\n make sure to use a unique name when using multiple arduinos","DefaultValue":"SimHub Dash","Type":"string","Template":"#define DEVICE_NAME \"{0}\""}
+#define DEVICE_NAME "STM32Device" //{"Group":"General","Name":"DEVICE_NAME","Title":"Device name,\r\n make sure to use a unique name when using multiple arduinos","DefaultValue":"SimHub Dash","Type":"string","Template":"#define DEVICE_NAME \"{0}\""}
 //#define DEVICE_UNIQUE_ID "f362fa4b-6a37-4f37-93be-2b8316194f04" //{"UniqueId":"f362fa4b-6a37-4f37-93be-2b8316194f04","Name":"DEVICE_UNIQUE_ID","Type":"uniqueid"}
+//#define DEVICE_UNIQUE_ID "4d36e978-e325-11ce-bfc1-08002be10318" //From SimHub Device Definition Authoring Tool
+//#define DEVICE_UNIQUE_ID "4863e028-01b9-4971-926f-e62b8cc8f1b7" //from serialOnly working sketch
+  #define DEVICE_UNIQUE_ID "0100fdd7-be5a-4808-91f5-05002bc60f72" 
 
-
-
-#define ENABLE_MICRO_GAMEPAD 1           //{"Group":"GAMEPAD","Name":"ENABLE_MICRO_GAMEPAD","Title":"Enable arduino micro gamepad output for all the activated buttons/encoders","DefaultValue":"0","Type":"bool"}
+#define ENABLE_MICRO_GAMEPAD 0           //{"Group":"GAMEPAD","Name":"ENABLE_MICRO_GAMEPAD","Title":"Enable arduino micro gamepad output for all the activated buttons/encoders","DefaultValue":"0","Type":"bool"}
 #define MICRO_GAMEPAD_ENCODERPRESSTIME 50 //{"Name":"MICRO_GAMEPAD_ENCODERPRESSTIME","Title":"Define how long (in milliseconds) the encoder related button will be hold after an encoder movement","DefaultValue":"50","Type":"int","Condition":"ENABLE_MICRO_GAMEPAD>0","Max":100}
 
 // -------------------------------------------------------------------------------------------------------
@@ -237,7 +239,7 @@ SHMatrixHT16H33SingleColor shMatrixHT16H33SingleColor;
 #define WS2812B_DATAPIN 31           //{"Name":"WS2812B_DATAPIN","Title":"Data (DIN) digital pin number","DefaultValue":"6","Type":"pin;WS2812B LEDS DATA","Condition":"WS2812B_RGBLEDCOUNT>0"}
 #define WS2812B_RGBENCODING 0        //{"Name":"WS2812B_RGBENCODING","Title":"WS2812B RGB encoding\r\nSet to 0 for GRB, 1 for RGB encoding, 2 for BRG encoding","DefaultValue":"0","Type":"list","Condition":"WS2812B_RGBLEDCOUNT>0","ListValues":"0,GRB encoding;1,RGB encoding;2,BRG encoding"}
 #define WS2812B_RIGHTTOLEFT 0        //{"Name":"WS2812B_RIGHTTOLEFT","Title":"Reverse led order ","DefaultValue":"0","Type":"bool","Condition":"WS2812B_RGBLEDCOUNT>0"}
-#define WS2812B_TESTMODE 1           //{"Name":"WS2812B_TESTMODE","Title":"TESTING MODE : Light up all configured leds (in red color) at arduino startup\r\nIt will clear after simhub connection","DefaultValue":"0","Type":"bool","Condition":"WS2812B_RGBLEDCOUNT>0"}
+#define WS2812B_TESTMODE 0           //{"Name":"WS2812B_TESTMODE","Title":"TESTING MODE : Light up all configured leds (in red color) at arduino startup\r\nIt will clear after simhub connection","DefaultValue":"0","Type":"bool","Condition":"WS2812B_RGBLEDCOUNT>0"}
 #define WS2812B_USEADAFRUITLIBRARY 0 //{"Name":"WS2812B_USEADAFRUITLIBRARY","Title":"ADVANCED : Use legacy adafruit library (only enable if you have sketch size issues)","DefaultValue":"0","Type":"bool","Condition":"WS2812B_RGBLEDCOUNT>0"}
 
 #if(WS2812B_USEADAFRUITLIBRARY == 0)
@@ -574,7 +576,7 @@ SHDebouncer ButtonsDebouncer(10);
 // https://www.dx.com/p/ky-040-rotary-encoder-module-brick-sensor-development-for-arduino-avr-pic-420429#.W9BCM0sza0Q
 // Rotary encoders with pull-up resistors on the 3 outputs
 // ----------------------------------------------------------------------------------------------------------
-#define ENABLED_ENCODERS_COUNT 2     //{"Group":"Rotary Encoders","Name":"ENABLED_ENCODERS_COUNT","Title":"Rotary encoders enabled","DefaultValue":"0","Type":"int","Max":8}
+#define ENABLED_ENCODERS_COUNT 0     //{"Group":"Rotary Encoders","Name":"ENABLED_ENCODERS_COUNT","Title":"Rotary encoders enabled","DefaultValue":"0","Type":"int","Max":8}
 #ifdef  INCLUDE_ENCODERS
 #include "SHRotaryEncoder.h"
 
@@ -1064,7 +1066,7 @@ void buttonMatrixStatusChanged(int buttonId, byte Status) {
 
 void setup()
 {
-	GenerateDeviceUUID(); //Generate the unique ID (Ref: STM32SimHub.h)
+	//GenerateDeviceUUID(); //Generate the unique ID (Ref: STM32SimHub.h)
 	
 	//#ifdef INCLUDE_TEMPGAUGE
 	//	shTEMPPIN.SetValue((int)80);
@@ -1074,7 +1076,9 @@ void setup()
 	shFUELPIN.SetValue((int)80);
 #endif
 
-	FlowSerialBegin(19200);
+	delay(1000); //Delay startup to establish Serial
+	//FlowSerialBegin(19200);
+	FlowSerialBegin(115200);   //DEBUG: Testing Faster Baudrate
 
 #ifdef INCLUDE_GAMEPAD
 	Joystick.begin(false);
@@ -1095,7 +1099,7 @@ void setup()
 #ifdef INCLUDE_WS2812B
 
 #if(WS2812B_USEADAFRUITLIBRARY == 0)
-#include "SHRGBLedsNeoPixelFastLed.h"
+#include "SHRGBLedsNeoPixelFastLed.h"  //TODO: Delete this row - is already included above
 	shRGBLedsWS2812B.begin(WS2812B_RGBLEDCOUNT, WS2812B_RIGHTTOLEFT, WS2812B_TESTMODE);
 #else
 #include "SHRGBLedsNeoPixel.h"
@@ -1337,6 +1341,8 @@ void loop() {
 	UpdateGamepadState();
 #endif
 
+	FlowSerialUpdate(); //Added for STM32 ArqSerial lib
+
 	shCustomProtocol.loop();
 
 	// Wait for data
@@ -1383,7 +1389,7 @@ void loop() {
 		}
 	}
 
-	if (millis() - lastSerialActivity > 5000) {
+	if (millis() - lastSerialActivity > 10000) {  //was 5000 timeout
 		Command_Shutdown();
 	}
 }
