@@ -21,7 +21,10 @@
                 "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/hardware/stm32/2.12.0/libraries/EEPROM/src",
                 "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/hardware/stm32/2.12.0/libraries/EEPROM/src/utility",
                 "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/hardware/stm32/2.12.0/libraries/Wire/src",
-                "D:/LOCAL/Arduino Sketches/libraries/FastLED/src"
+                "D:/LOCAL/Arduino Sketches/libraries/FastLED/src",
+                "D:/LOCAL/Arduino Sketches/libraries/Adafruit_GFX_Library",
+                "D:/LOCAL/Arduino Sketches/libraries/Adafruit_TinyUSB_Library/src",
+                "D:/LOCAL/Arduino Sketches/libraries/ArduinoJoystickLibrary/src"
             ],
             "defines": [
                 "STM32F4xx",
