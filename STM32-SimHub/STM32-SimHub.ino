@@ -56,7 +56,7 @@
 #endif
 
 // #define INCLUDE_ENCODERS                      //{"Name":"INCLUDE_ENCODERS","Type":"autodefine","Condition":"[ENABLED_ENCODERS_COUNT]>0","IsInput":true}
-// #define INCLUDE_BUTTONS                       //{"Name":"INCLUDE_BUTTONS","Type":"autodefine","Condition":"[ENABLED_BUTTONS_COUNT]>0","IsInput":true}
+#define INCLUDE_BUTTONS                       //{"Name":"INCLUDE_BUTTONS","Type":"autodefine","Condition":"[ENABLED_BUTTONS_COUNT]>0","IsInput":true}
 // #define INCLUDE_BUTTONMATRIX                //{"Name":"INCLUDE_BUTTONMATRIX","Type":"autodefine","Condition":"[ENABLED_BUTTONMATRIX]>0","IsInput":true}
 // #define INCLUDE_DM163_MATRIX                //{"Name":"INCLUDE_DM163_MATRIX","Type":"autodefine","Condition":"[DM163_MATRIX_ENABLED]>0"}
 // #define INCLUDE_SUNFOUNDERSH104P_MATRIX     //{"Name":"INCLUDE_SUNFOUNDERSH104P_MATRIX","Type":"autodefine","Condition":"[SUNFOUNDERSH104P_MATRIX_ENABLED]>0"}
@@ -547,13 +547,13 @@ SHPWMPin shCONSPIN(CONS_PIN, 40);
 // ----------------------- ADDITIONAL BUTTONS ---------------------------------------------------------------
 // https://github.com/zegreatclan/SimHub/wiki/Arduino-Press-Buttons
 // ----------------------------------------------------------------------------------------------------------
-#define ENABLED_BUTTONS_COUNT 12 //{"Group":"Additional Buttons","Name":"ENABLED_BUTTONS_COUNT","Title":"Additional buttons (directly connected to the arduino, 12 max) buttons count","DefaultValue":"0","Type":"int","Max":12}
+#define ENABLED_BUTTONS_COUNT 1 //{"Group":"Additional Buttons","Name":"ENABLED_BUTTONS_COUNT","Title":"Additional buttons (directly connected to the arduino, 12 max) buttons count","DefaultValue":"0","Type":"int","Max":12}
 #ifdef INCLUDE_BUTTONS
 
-#define BUTTON_PIN_1 22		  //{"Name":"BUTTON_PIN_1","Title":"1'st Additional button digital pin","DefaultValue":"3","Type":"pin;Button 1","Condition":"ENABLED_BUTTONS_COUNT>=1"}
+#define BUTTON_PIN_1 47		  //{"Name":"BUTTON_PIN_1","Title":"1'st Additional button digital pin","DefaultValue":"3","Type":"pin;Button 1","Condition":"ENABLED_BUTTONS_COUNT>=1"}
 #define BUTTON_WIRINGMODE_1 0 //{"Name":"BUTTON_WIRINGMODE_1","Title":"1'st Additional button wiring","DefaultValue":"0","Type":"list","Condition":"ENABLED_BUTTONS_COUNT>=1","ListValues":"0,Pin to GND;1,VCC to pin"}
 #define BUTTON_LOGICMODE_1 0  //{"Name":"BUTTON_LOGICMODE_1","Title":"1'st Additional button logic","DefaultValue":"0","Type":"list","Condition":"ENABLED_BUTTONS_COUNT>=1","ListValues":"0,Normal;1,Reversed"}
-
+/*
 #define BUTTON_PIN_2 23		  //{"Name":"BUTTON_PIN_2","Title":"2'nd Additional button digital pin","DefaultValue":"3","Type":"pin;Button 2","Condition":"ENABLED_BUTTONS_COUNT>=2"}
 #define BUTTON_WIRINGMODE_2 0 //{"Name":"BUTTON_WIRINGMODE_2","Title":"2'nd Additional button wiring","DefaultValue":"0","Type":"list","Condition":"ENABLED_BUTTONS_COUNT>=2","ListValues":"0,Pin to GND;1,VCC to pin"}
 #define BUTTON_LOGICMODE_2 0  //{"Name":"BUTTON_LOGICMODE_2","Title":"2'nd Additional button logic","DefaultValue":"0","Type":"list","Condition":"ENABLED_BUTTONS_COUNT>=2","ListValues":"0,Normal;1,Reversed"}
@@ -603,6 +603,12 @@ int BUTTON_WIRING_MODES[] = {BUTTON_WIRINGMODE_1, BUTTON_WIRINGMODE_2, BUTTON_WI
 int BUTTON_LOGIC_MODES[] = {BUTTON_LOGICMODE_1, BUTTON_LOGICMODE_2, BUTTON_LOGICMODE_3, BUTTON_LOGICMODE_4, BUTTON_LOGICMODE_5, BUTTON_LOGICMODE_6, BUTTON_LOGICMODE_7, BUTTON_LOGICMODE_8, BUTTON_LOGICMODE_9, BUTTON_LOGICMODE_10, BUTTON_LOGICMODE_11, BUTTON_LOGICMODE_12};
 SHButton button1, button2, button3, button4, button5, button6, button7, button8, button9, button10, button11, button12;
 SHButton *BUTTONS[] = {&button1, &button2, &button3, &button4, &button5, &button6, &button7, &button8, &button9, &button10, &button11, &button12};
+*/
+int BUTTON_PINS[] = {BUTTON_PIN_1};
+int BUTTON_WIRING_MODES[] = {BUTTON_WIRINGMODE_1};
+int BUTTON_LOGIC_MODES[] = {BUTTON_LOGICMODE_1};
+SHButton button1;
+SHButton *BUTTONS[] = {&button1};
 
 #endif
 
