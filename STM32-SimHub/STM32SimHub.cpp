@@ -1,3 +1,4 @@
+/*
 #include "STM32SimHub.h"
 
 char DEVICE_UNIQUE_ID[33]; // 32 hex chars + null

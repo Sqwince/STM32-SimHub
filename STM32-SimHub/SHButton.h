@@ -2,8 +2,12 @@
 #define __SHBUTTON_H__
 
 #include <Arduino.h>
-//#include "SHFastIO.h"
+#if defined(__AVR_ATmega32U4__)
+#include "SHFastIO.h"
+#endif
+#if defined(ARDUINO_OPENFFBOARD_F407VG)
 #include "STM32_FastIO.h"
+#endif
 
 typedef void(*SHButtonChanged) (int, byte);
 

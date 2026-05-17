@@ -12,7 +12,7 @@ void Command_SetBaudrate() {
 }
 
 void Command_ButtonsCount() {
-	FlowSerialWrite((byte)(ENABLED_BUTTONS_COUNT + ENABLED_BUTTONMATRIX * (BMATRIX_COLS * BMATRIX_ROWS)));
+	FlowSerialWrite((byte)(ENABLED_BUTTONS_COUNT + ENABLED_BUTTONMATRIX * (BMATRIX_COLS * BMATRIX_ROWS) + (ENABLED_SPI_BUTTON_CHIP_COUNT * 8)));
 	FlowSerialFlush();
 }
 

@@ -2,8 +2,13 @@
 #define __SHROTARYENCODER_H__
 
 #include <Arduino.h>
-//#include "SHFastIO.h"
+#if defined(__AVR_ATmega32U4__)
+#include "SHFastIO.h"
+#endif
+#if defined(ARDUINO_OPENFFBOARD_F407VG)
 #include "STM32_FastIO.h"
+#endif
+
 #include "SHDebouncer.h"
 
 #define R_START	   0x0

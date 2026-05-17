@@ -56,10 +56,12 @@
 #endif
 
 #define INCLUDE_ENCODERS                       //{"Name":"INCLUDE_ENCODERS","Type":"autodefine","Condition":"[ENABLED_ENCODERS_COUNT]>0","IsInput":true}
-// #define INCLUDE_BUTTONS                     //{"Name":"INCLUDE_BUTTONS","Type":"autodefine","Condition":"[ENABLED_BUTTONS_COUNT]>0","IsInput":true}
+#define INCLUDE_BUTTONS                     //{"Name":"INCLUDE_BUTTONS","Type":"autodefine","Condition":"[ENABLED_BUTTONS_COUNT]>0","IsInput":true}
 // #define INCLUDE_BUTTONMATRIX                //{"Name":"INCLUDE_BUTTONMATRIX","Type":"autodefine","Condition":"[ENABLED_BUTTONMATRIX]>0","IsInput":true}
 // #define INCLUDE_DM163_MATRIX                //{"Name":"INCLUDE_DM163_MATRIX","Type":"autodefine","Condition":"[DM163_MATRIX_ENABLED]>0"}
 // #define INCLUDE_SUNFOUNDERSH104P_MATRIX     //{"Name":"INCLUDE_SUNFOUNDERSH104P_MATRIX","Type":"autodefine","Condition":"[SUNFOUNDERSH104P_MATRIX_ENABLED]>0"}
+#define INCLUDE_SPI_BUTTONS                    //{"Name":"INCLUDE_SPI_BUTTONS","Type":"autodefine","Condition":"[SPI_BUTTON_BOARDS]>0","IsInput":true}
+
 
 #include <avr/pgmspace.h>
 #include <EEPROM.h>
@@ -68,16 +70,15 @@
 #include <avr/pgmspace.h>
 #include <Wire.h>
 // #include "Adafruit_GFX.h"   //TODO: library not found on compile, disable for now
-// #include "FlowSerialRead.h" //Replaced with STM32 version below
+// #include "FlowSerialRead.h" //TODO: add IFDEF AVR/STM32 detection for includes
 
 // STM32 Includes
-#include "STM32SimHub.h"
+#include "STM32SimHub.h"    
 #include "STM32FlowSerialRead.h"
 /* Install Arduino Library: https://github.com/adafruit/Adafruit_TinyUSB_Arduino
 	Install library add-on for STM32: https://github.com/code-fiasco/TinyUSB-Arduino-STM32/tree/main
 	  └──Add-> libraries/Adafruit_TinyUSB_Library/src/arduino/ports/
 */
-
 #include "setPwmFrequency.h"
 #include "SHDebouncer.h"
 #include "SHButton.h"
@@ -436,7 +437,7 @@ SHPWMPin shBOOSTPIN(BOOST_PIN, true);
 
 // ------------------------ TEMP GAUGE ---------------------------------------------------------------------
 // https://github.com/zegreatclan/SimHub/wiki/Arduino-After-Market-Boost-Gauge
-// ----------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------
 #ifdef INCLUDE_TEMPGAUGE
 #define ENABLE_TEMPGAUGE 0 //{"Group":"Water Temperature Gauge","Name":"ENABLE_TEMPGAUGE","Title":"E36 Temperature gauge enabled\r\nDeprated see wiki","DefaultValue":"0","Type":"bool"}
 #define TEMP_PIN 5		   //{"Name":"TEMP_PIN","Title":"TEMP pwm pin","DefaultValue":"5","Type":"pin;Temperature signal","Condition":"ENABLE_TEMPGAUGE >0"}
@@ -446,7 +447,7 @@ SHPWMPin shTEMPPIN(TEMP_PIN, (int)40);
 
 // ------------------------ FUEL GAUGE ---------------------------------------------------------------------
 // https://github.com/zegreatclan/SimHub/wiki/Arduino-After-Market-Boost-Gauge
-// ----------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------
 #ifdef INCLUDE_FUELGAUGE
 #define ENABLE_FUELGAUGE 0 //{"Group":"Fuel Gauge","Name":"ENABLE_FUELGAUGE","Title":"E36 Fuel gauge enabled\r\nDeprated see wiki","DefaultValue":"0","Type":"bool"}
 #define FUEL_PIN 5		   //{"Name":"FUEL_PIN","Title":"FUEL pwm pin","DefaultValue":"5","Type":"pin;Fuel signal","Condition":"ENABLE_FUELGAUGE >0"}
@@ -456,7 +457,7 @@ SHPWMPin shFUELPIN(FUEL_PIN, (int)40);
 
 // ------------------------ CONS GAUGE ---------------------------------------------------------------------
 // https://github.com/zegreatclan/SimHub/wiki/Arduino-After-Market-Boost-Gauge
-// ----------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------
 #ifdef INCLUDE_CONSGAUGE
 #define ENABLE_CONSGAUGE 0 //{"Group":"Consumption Gauge","Name":"ENABLE_CONSGAUGE","Title":"After market consommation gauge enabled\r\n(DO NOT USE, NOT WORKING YET)","DefaultValue":"0","Type":"bool"}
 #define CONS_PIN 5		   //{"Name":"CONS_PIN","Title":"CONS pwm pin","DefaultValue":"5","Type":"pin;Consommation signal","Condition":"ENABLE_CONSGAUGE >0"}
@@ -464,10 +465,10 @@ SHPWMPin shFUELPIN(FUEL_PIN, (int)40);
 SHPWMPin shCONSPIN(CONS_PIN, 40);
 #endif
 
-
+// ------------------------ GAMEPAD ------------------------------------------------------------------------
+// NOTE: AVR uses 10-bit (1023) ADC instead of 12-bit (4095) ADC on STM32
+//----------------------------------------------------------------------------------------------------------
 #ifdef INCLUDE_GAMEPAD
-
-//NOTE: AVR uses 10-bit (1023) ADC instead of 12-bit (4095) ADC on STM32
 
 // Analog Joystick Axis1
 #define GAMEPAD_AXIS_01_ENABLED 1			    	//{"Group":"Gamepad analog axis","Name":"GAMEPAD_AXIS_01_ENABLED","Title":"Throttle axis enabled","DefaultValue":"0","Type":"bool"}
@@ -547,14 +548,15 @@ SHPWMPin shCONSPIN(CONS_PIN, 40);
 // ----------------------- ADDITIONAL BUTTONS ---------------------------------------------------------------
 // https://github.com/zegreatclan/SimHub/wiki/Arduino-Press-Buttons
 // ----------------------------------------------------------------------------------------------------------
-#define ENABLED_BUTTONS_COUNT 0 //{"Group":"Additional Buttons","Name":"ENABLED_BUTTONS_COUNT","Title":"Additional buttons (directly connected to the arduino, 12 max) buttons count","DefaultValue":"0","Type":"int","Max":12}
+#define ENABLED_BUTTONS_COUNT 2
+ //{"Group":"Additional Buttons","Name":"ENABLED_BUTTONS_COUNT","Title":"Additional buttons (directly connected to the arduino, 12 max) buttons count","DefaultValue":"0","Type":"int","Max":12}
 #ifdef INCLUDE_BUTTONS
 
-#define BUTTON_PIN_1 3		  //{"Name":"BUTTON_PIN_1","Title":"1'st Additional button digital pin","DefaultValue":"3","Type":"pin;Button 1","Condition":"ENABLED_BUTTONS_COUNT>=1"}
+#define BUTTON_PIN_1 67		  //{"Name":"BUTTON_PIN_1","Title":"1'st Additional button digital pin","DefaultValue":"3","Type":"pin;Button 1","Condition":"ENABLED_BUTTONS_COUNT>=1"}
 #define BUTTON_WIRINGMODE_1 0 //{"Name":"BUTTON_WIRINGMODE_1","Title":"1'st Additional button wiring","DefaultValue":"0","Type":"list","Condition":"ENABLED_BUTTONS_COUNT>=1","ListValues":"0,Pin to GND;1,VCC to pin"}
 #define BUTTON_LOGICMODE_1 0  //{"Name":"BUTTON_LOGICMODE_1","Title":"1'st Additional button logic","DefaultValue":"0","Type":"list","Condition":"ENABLED_BUTTONS_COUNT>=1","ListValues":"0,Normal;1,Reversed"}
 
-#define BUTTON_PIN_2 23		  //{"Name":"BUTTON_PIN_2","Title":"2'nd Additional button digital pin","DefaultValue":"3","Type":"pin;Button 2","Condition":"ENABLED_BUTTONS_COUNT>=2"}
+#define BUTTON_PIN_2 66		  //{"Name":"BUTTON_PIN_2","Title":"2'nd Additional button digital pin","DefaultValue":"3","Type":"pin;Button 2","Condition":"ENABLED_BUTTONS_COUNT>=2"}
 #define BUTTON_WIRINGMODE_2 0 //{"Name":"BUTTON_WIRINGMODE_2","Title":"2'nd Additional button wiring","DefaultValue":"0","Type":"list","Condition":"ENABLED_BUTTONS_COUNT>=2","ListValues":"0,Pin to GND;1,VCC to pin"}
 #define BUTTON_LOGICMODE_2 0  //{"Name":"BUTTON_LOGICMODE_2","Title":"2'nd Additional button logic","DefaultValue":"0","Type":"list","Condition":"ENABLED_BUTTONS_COUNT>=2","ListValues":"0,Normal;1,Reversed"}
 
@@ -605,6 +607,24 @@ SHButton button1, button2, button3, button4, button5, button6, button7, button8,
 SHButton *BUTTONS[] = {&button1, &button2, &button3, &button4, &button5, &button6, &button7, &button8, &button9, &button10, &button11, &button12};
 
 #endif
+
+// ----------------------- SPI BUTTONS (74HC165 Shift Register) ---------------------------------------------
+// https://github.com/Ultrawipf/OpenFFBoard-hardware/tree/master/SPI-Buttons-32
+// Each SPI Button board has 4x 74HC165 shift registers for a total of 32 button inputs.
+// Can daisy chain up to 4 SPI boards for a total of 128 button inputs from 3 digital pins. 
+// ----------------------------------------------------------------------------------------------------------
+#define ENABLED_SPI_BUTTON_CHIP_COUNT 2 		//{"Group":"SPI Buttons","Name":"ENABLED_SPI_BUTTON_CHIP_COUNT","Title":"SPI buttons (74HC165 Shift Register) count","DefaultValue":"0","Type":"int","Max":16}
+#ifdef INCLUDE_SPI_BUTTONS
+	#define SPI_BUTTON_LOGICMODE 1 				//{"Group":"SPI Buttons","Name":"SPI_BUTTON_LOGICMODE","Title":"SPI buttons logic","DefaultValue":"1","Type":"list","Condition":"ENABLED_SPI_BUTTON_CHIP_COUNT>0","ListValues":"0,Normal;1,Reversed"}
+	#include "ShiftIn.h" //Arduino Shiftin Library https://github.com/InfectedBytes/ArduinoShiftIn
+
+	#define SPI_BUTTON_MISO_PIN 30 //D30/PB14/PIN_SPI2_MISO
+	#define SPI_BUTTON_SCK_PIN 29  //D29/PB13/PIN_SPI2_SCK
+	#define SPI_BUTTON_CS_PIN  28  //D28/PB12/PIN_SPI2_CS1
+
+	ShiftIn<(ENABLED_SPI_BUTTON_CHIP_COUNT)> shiftButtons;
+#endif //End SPI BUTTONs
+
 
 SHDebouncer ButtonsDebouncer(10);
 
@@ -676,9 +696,9 @@ SHRotaryEncoder encoder1, encoder2, encoder3, encoder4, encoder5, encoder6, enco
 SHRotaryEncoder *SHRotaryEncoders[] = {&encoder1, &encoder2, &encoder3, &encoder4, &encoder5, &encoder6, &encoder7, &encoder8};
 #endif
 
-// ----------------------- ROTARY ENCODERS ------------------------------------------------------------------
-// https://www.dx.com/p/ky-040-rotary-encoder-module-brick-sensor-development-for-arduino-avr-pic-420429#.W9BCM0sza0Q
-// Rotary encoders with pull-up resistors on the 3 outputs
+// ----------------------- BUTTON MATRIX ------------------------------------------------------------------
+// Matrix wiring is intended for momentary switches, you cant use toggle switches (non momentary) and won't
+// support multiple buttons pressed at a time
 // ----------------------------------------------------------------------------------------------------------
 #define ENABLED_BUTTONMATRIX 0 //{"Group":"Button matrix","Name":"ENABLED_BUTTONMATRIX","Title":"Button matrix enabled","DefaultValue":"0","Type":"bool"}
 
@@ -1279,6 +1299,10 @@ void setup()
 	}
 #endif
 
+#ifdef INCLUDE_SPI_BUTTONS
+shiftButtons.begin(SPI_BUTTON_CS_PIN, SPI_BUTTON_MISO_PIN, SPI_BUTTON_SCK_PIN);
+#endif
+
 #ifdef INCLUDE_BUTTONMATRIX
 	shButtonMatrix.begin(BMATRIX_COLS, BMATRIX_ROWS, BMATRIX_COLSDEF, BMATRIX_ROWSDEF, buttonMatrixStatusChanged);
 #endif
@@ -1379,6 +1403,20 @@ void UpdateGamepadState()
 	}
 #endif
 
+#ifdef INCLUDE_SPI_BUTTONS
+	btnidx = TM1638_ENABLEDMODULES * 8 + ENABLED_BUTTONS_COUNT + ENABLED_BUTTONMATRIX * (BMATRIX_COLS * BMATRIX_ROWS);
+	shiftButtons.read();
+
+	for (int i = 0; i < shiftButtons.getDataWidth(); i++)
+	{
+		byte btnState = shiftButtons.state(i);
+		if (SPI_BUTTON_LOGICMODE == 1){	btnState = !btnState;} 
+
+		Joystick.setButton(btnidx, btnState);
+		btnidx++;
+	}
+#endif
+
 #ifdef INCLUDE_ENCODERS
 	UpdateGamepadEncodersState(false);
 #endif
@@ -1392,7 +1430,7 @@ void UpdateGamepadState()
 #ifdef INCLUDE_ENCODERS
 void UpdateGamepadEncodersState(bool sendState)
 {
-	int btnidx = TM1638_ENABLEDMODULES * 8 + ENABLED_BUTTONS_COUNT + ENABLED_BUTTONMATRIX * (BMATRIX_COLS * BMATRIX_ROWS);
+	int btnidx = TM1638_ENABLEDMODULES * 8 + ENABLED_BUTTONS_COUNT + ENABLED_BUTTONMATRIX * (BMATRIX_COLS * BMATRIX_ROWS) + (ENABLED_SPI_BUTTON_CHIP_COUNT * 8);
 	unsigned long refTime = millis();
 	for (int i = 0; i < ENABLED_ENCODERS_COUNT; i++)
 	{
