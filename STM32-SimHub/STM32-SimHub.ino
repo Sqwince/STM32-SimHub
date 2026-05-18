@@ -47,7 +47,7 @@
 #if defined(__AVR_ATmega32U4__) || defined(ARDUINO_OPENFFBOARD_F407VG)
 #define INCLUDE_GAMEPAD //{"Name":"INCLUDE_GAMEPAD","Type":"autodefine","Condition":"[ENABLE_MICRO_GAMEPAD]>0"}
 #endif
-// #define INCLUDE_GAMEPADAXIS                 //{"Name":"INCLUDE_GAMEPADAXIS","Type":"autodefine","Condition":"[GAMEPAD_AXIS_01_ENABLED]>0 || [GAMEPAD_AXIS_02_ENABLED]>0 || [GAMEPAD_AXIS_03_ENABLED]>0"}
+//#define INCLUDE_GAMEPADAXIS                 //{"Name":"INCLUDE_GAMEPADAXIS","Type":"autodefine","Condition":"[GAMEPAD_AXIS_01_ENABLED]>0 || [GAMEPAD_AXIS_02_ENABLED]>0 || [GAMEPAD_AXIS_03_ENABLED]>0"}
 
 #ifdef INCLUDE_GAMEPADAXIS
 #ifndef INCLUDE_GAMEPAD
@@ -56,7 +56,7 @@
 #endif
 
 #define INCLUDE_ENCODERS                       //{"Name":"INCLUDE_ENCODERS","Type":"autodefine","Condition":"[ENABLED_ENCODERS_COUNT]>0","IsInput":true}
-#define INCLUDE_BUTTONS                     //{"Name":"INCLUDE_BUTTONS","Type":"autodefine","Condition":"[ENABLED_BUTTONS_COUNT]>0","IsInput":true}
+//#define INCLUDE_BUTTONS                     //{"Name":"INCLUDE_BUTTONS","Type":"autodefine","Condition":"[ENABLED_BUTTONS_COUNT]>0","IsInput":true}
 // #define INCLUDE_BUTTONMATRIX                //{"Name":"INCLUDE_BUTTONMATRIX","Type":"autodefine","Condition":"[ENABLED_BUTTONMATRIX]>0","IsInput":true}
 // #define INCLUDE_DM163_MATRIX                //{"Name":"INCLUDE_DM163_MATRIX","Type":"autodefine","Condition":"[DM163_MATRIX_ENABLED]>0"}
 // #define INCLUDE_SUNFOUNDERSH104P_MATRIX     //{"Name":"INCLUDE_SUNFOUNDERSH104P_MATRIX","Type":"autodefine","Condition":"[SUNFOUNDERSH104P_MATRIX_ENABLED]>0"}
@@ -70,21 +70,27 @@
 #include <avr/pgmspace.h>
 #include <Wire.h>
 // #include "Adafruit_GFX.h"   //TODO: library not found on compile, disable for now
-// #include "FlowSerialRead.h" //TODO: add IFDEF AVR/STM32 detection for includes
+
+#if defined(__AVR_ATmega32U4__)
+#include "FlowSerialRead.h"
+#endif
+#if defined(ARDUINO_OPENFFBOARD_F407VG)
+#include "Adafruit_TinyUSB.h"
+#include "STM32FlowSerialRead.h"
+// Install Arduino Library: https://github.com/adafruit/Adafruit_TinyUSB_Arduino
+//	Install library add-on for STM32: https://github.com/code-fiasco/TinyUSB-Arduino-STM32/tree/main
+//	  └──Add-> libraries/Adafruit_TinyUSB_Library/src/arduino/ports/
+#endif
 
 // STM32 Includes
 #include "STM32SimHub.h"    
-#include "STM32FlowSerialRead.h"
-/* Install Arduino Library: https://github.com/adafruit/Adafruit_TinyUSB_Arduino
-	Install library add-on for STM32: https://github.com/code-fiasco/TinyUSB-Arduino-STM32/tree/main
-	  └──Add-> libraries/Adafruit_TinyUSB_Library/src/arduino/ports/
-*/
+
 #include "setPwmFrequency.h"
 #include "SHDebouncer.h"
 #include "SHButton.h"
 
 // ----------------------------------------------------- HW SETTINGS, PLEASE REVIEW ALL -------------------------------------------
-#define DEVICE_NAME "STM32Device" //{"Group":"General","Name":"DEVICE_NAME","Title":"Device name,\r\n make sure to use a unique name when using multiple arduinos","DefaultValue":"SimHub Dash","Type":"string","Template":"#define DEVICE_NAME \"{0}\""}
+#define DEVICE_NAME "Arduino Micro" //{"Group":"General","Name":"DEVICE_NAME","Title":"Device name,\r\n make sure to use a unique name when using multiple arduinos","DefaultValue":"SimHub Dash","Type":"string","Template":"#define DEVICE_NAME \"{0}\""}
 // #define DEVICE_UNIQUE_ID "f362fa4b-6a37-4f37-93be-2b8316194f04" //{"UniqueId":"f362fa4b-6a37-4f37-93be-2b8316194f04","Name":"DEVICE_UNIQUE_ID","Type":"uniqueid"}
 #define DEVICE_UNIQUE_ID "0100fdd7-be5a-4808-91f5-05002bc60f72" // Woring unique ID.
 
@@ -233,14 +239,14 @@ SHMatrixHT16H33SingleColor shMatrixHT16H33SingleColor;
 // -------------------------------------------------------------------------------------------------------
 // WS2812b chained RGBLEDS count
 // 0 disabled, > 0 enabled
-#define WS2812B_RGBLEDCOUNT 18 //{"Group":"WS2812B RGB Leds","Name":"WS2812B_RGBLEDCOUNT","Title":"WS2812B RGB leds count","DefaultValue":"0","Type":"int","Max":150}
+#define WS2812B_RGBLEDCOUNT 18      	//{"Group":"WS2812B RGB Leds","Name":"WS2812B_RGBLEDCOUNT","Title":"WS2812B RGB leds count","DefaultValue":"0","Type":"int","Max":150}
 #ifdef INCLUDE_WS2812B
 
-#define WS2812B_DATAPIN 31			 //{"Name":"WS2812B_DATAPIN","Title":"Data (DIN) digital pin number","DefaultValue":"6","Type":"pin;WS2812B LEDS DATA","Condition":"WS2812B_RGBLEDCOUNT>0"}
-#define WS2812B_RGBENCODING 0		 //{"Name":"WS2812B_RGBENCODING","Title":"WS2812B RGB encoding\r\nSet to 0 for GRB, 1 for RGB encoding, 2 for BRG encoding","DefaultValue":"0","Type":"list","Condition":"WS2812B_RGBLEDCOUNT>0","ListValues":"0,GRB encoding;1,RGB encoding;2,BRG encoding"}
-#define WS2812B_RIGHTTOLEFT 0		 //{"Name":"WS2812B_RIGHTTOLEFT","Title":"Reverse led order ","DefaultValue":"0","Type":"bool","Condition":"WS2812B_RGBLEDCOUNT>0"}
-#define WS2812B_TESTMODE 1			 //{"Name":"WS2812B_TESTMODE","Title":"TESTING MODE : Light up all configured leds (in red color) at arduino startup\r\nIt will clear after simhub connection","DefaultValue":"0","Type":"bool","Condition":"WS2812B_RGBLEDCOUNT>0"}
-#define WS2812B_USEADAFRUITLIBRARY 0 //{"Name":"WS2812B_USEADAFRUITLIBRARY","Title":"ADVANCED : Use legacy adafruit library (only enable if you have sketch size issues)","DefaultValue":"0","Type":"bool","Condition":"WS2812B_RGBLEDCOUNT>0"}
+#define WS2812B_DATAPIN 31	//PB15 		//{"Name":"WS2812B_DATAPIN","Title":"Data (DIN) digital pin number","DefaultValue":"6","Type":"pin;WS2812B LEDS DATA","Condition":"WS2812B_RGBLEDCOUNT>0"}
+#define WS2812B_RGBENCODING 0			//{"Name":"WS2812B_RGBENCODING","Title":"WS2812B RGB encoding\r\nSet to 0 for GRB, 1 for RGB encoding, 2 for BRG encoding","DefaultValue":"0","Type":"list","Condition":"WS2812B_RGBLEDCOUNT>0","ListValues":"0,GRB encoding;1,RGB encoding;2,BRG encoding"}
+#define WS2812B_RIGHTTOLEFT 0		    //{"Name":"WS2812B_RIGHTTOLEFT","Title":"Reverse led order ","DefaultValue":"0","Type":"bool","Condition":"WS2812B_RGBLEDCOUNT>0"}
+#define WS2812B_TESTMODE 1			    //{"Name":"WS2812B_TESTMODE","Title":"TESTING MODE : Light up all configured leds (in red color) at arduino startup\r\nIt will clear after simhub connection","DefaultValue":"0","Type":"bool","Condition":"WS2812B_RGBLEDCOUNT>0"}
+#define WS2812B_USEADAFRUITLIBRARY 0    //{"Name":"WS2812B_USEADAFRUITLIBRARY","Title":"ADVANCED : Use legacy adafruit library (only enable if you have sketch size issues)","DefaultValue":"0","Type":"bool","Condition":"WS2812B_RGBLEDCOUNT>0"}
 
 #if (WS2812B_USEADAFRUITLIBRARY == 0)
 #include "SHRGBLedsNeoPixelFastLed.h"
@@ -548,7 +554,7 @@ SHPWMPin shCONSPIN(CONS_PIN, 40);
 // ----------------------- ADDITIONAL BUTTONS ---------------------------------------------------------------
 // https://github.com/zegreatclan/SimHub/wiki/Arduino-Press-Buttons
 // ----------------------------------------------------------------------------------------------------------
-#define ENABLED_BUTTONS_COUNT 2
+#define ENABLED_BUTTONS_COUNT 0
  //{"Group":"Additional Buttons","Name":"ENABLED_BUTTONS_COUNT","Title":"Additional buttons (directly connected to the arduino, 12 max) buttons count","DefaultValue":"0","Type":"int","Max":12}
 #ifdef INCLUDE_BUTTONS
 
@@ -632,62 +638,62 @@ SHDebouncer ButtonsDebouncer(10);
 // https://www.dx.com/p/ky-040-rotary-encoder-module-brick-sensor-development-for-arduino-avr-pic-420429#.W9BCM0sza0Q
 // Rotary encoders with pull-up resistors on the 3 outputs
 // ----------------------------------------------------------------------------------------------------------
-#define ENABLED_ENCODERS_COUNT 1 //{"Group":"Rotary Encoders","Name":"ENABLED_ENCODERS_COUNT","Title":"Rotary encoders enabled","DefaultValue":"0","Type":"int","Max":8}
+#define ENABLED_ENCODERS_COUNT 2 //{"Group":"Rotary Encoders","Name":"ENABLED_ENCODERS_COUNT","Title":"Rotary encoders enabled","DefaultValue":"0","Type":"int","Max":8}
 #ifdef INCLUDE_ENCODERS
 #include "SHRotaryEncoder.h"
 
-#define ENCODER1_CLK_PIN 70			 //{"Name":"ENCODER1_CLK_PIN","Title":"Encoder 1 output A (CLK) pin","DefaultValue":"70","Type":"pin;Encoder 1 CLK","Condition":"ENABLED_ENCODERS_COUNT>0"}
-#define ENCODER1_DT_PIN 46			 //{"Name":"ENCODER1_DT_PIN","Title":"Encoder 1 output B (DT) pin","DefaultValue":"46","Type":"pin;Encoder 1 DT","Condition":"ENABLED_ENCODERS_COUNT>0"}
-#define ENCODER1_BUTTON_PIN 47		 //{"Name":"ENCODER1_BUTTON_PIN","Title":"Encoder 1 button (SW) pin","DefaultValue":"47","Type":"pin;Encoder 1 SWITCH","Condition":"ENABLED_ENCODERS_COUNT>0","Min":-1}
-#define ENCODER1_ENABLE_PULLUP 0	 //{"Name":"ENCODER1_ENABLE_PULLUP","Title":"Encoder 1 enable pullup resistor","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>0"}
-#define ENCODER1_REVERSE_DIRECTION 0 //{"Name":"ENCODER1_REVERSE_DIRECTION","Title":"Encoder 1 reverse direction","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>0"}
-#define ENCODER1_ENABLE_HALFSTEPS 0	 //{"Name":"ENCODER1_ENABLE_HALFSTEPS","Title":"Encoder 1 steps mode","DefaultValue":"0","Type":"list","Condition":"ENABLED_ENCODERS_COUNT>=1","ListValues":"0,Full steps;1,Half steps"}
+#define ENCODER1_CLK_PIN 70		//DIN_4		//{"Name":"ENCODER1_CLK_PIN","Title":"Encoder 1 output A (CLK) pin","DefaultValue":"70","Type":"pin;Encoder 1 CLK","Condition":"ENABLED_ENCODERS_COUNT>0"}
+#define ENCODER1_DT_PIN 46		//DIN_2		//{"Name":"ENCODER1_DT_PIN","Title":"Encoder 1 output B (DT) pin","DefaultValue":"46","Type":"pin;Encoder 1 DT","Condition":"ENABLED_ENCODERS_COUNT>0"}
+#define ENCODER1_BUTTON_PIN 47	//DIN_1		//{"Name":"ENCODER1_BUTTON_PIN","Title":"Encoder 1 button (SW) pin","DefaultValue":"47","Type":"pin;Encoder 1 SWITCH","Condition":"ENABLED_ENCODERS_COUNT>0","Min":-1}
+#define ENCODER1_ENABLE_PULLUP 0	 		//{"Name":"ENCODER1_ENABLE_PULLUP","Title":"Encoder 1 enable pullup resistor","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>0"}
+#define ENCODER1_REVERSE_DIRECTION 0 		//{"Name":"ENCODER1_REVERSE_DIRECTION","Title":"Encoder 1 reverse direction","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>0"}
+#define ENCODER1_ENABLE_HALFSTEPS 0	 		//{"Name":"ENCODER1_ENABLE_HALFSTEPS","Title":"Encoder 1 steps mode","DefaultValue":"0","Type":"list","Condition":"ENABLED_ENCODERS_COUNT>=1","ListValues":"0,Full steps;1,Half steps"}
 
-#define ENCODER2_CLK_PIN 11			 //{"Name":"ENCODER2_CLK_PIN","Title":"Encoder 2 output A (CLK) pin","DefaultValue":"11","Type":"pin;Encoder 2 CLK","Condition":"ENABLED_ENCODERS_COUNT>1"}
-#define ENCODER2_DT_PIN 12			 //{"Name":"ENCODER2_DT_PIN","Title":"Encoder 2 output B (DT) pin","DefaultValue":"12","Type":"pin;Encoder 2 DT","Condition":"ENABLED_ENCODERS_COUNT>1"}
-#define ENCODER2_BUTTON_PIN 13		 //{"Name":"ENCODER2_BUTTON_PIN","Title":"Encoder 2 button (SW) pin","DefaultValue":"13","Type":"pin;Encoder 2 SWITCH","Condition":"ENABLED_ENCODERS_COUNT>1","Min":-1}
-#define ENCODER2_ENABLE_PULLUP 0	 //{"Name":"ENCODER2_ENABLE_PULLUP","Title":"Encoder 2 enable pullup resistor","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>1"}
-#define ENCODER2_REVERSE_DIRECTION 0 //{"Name":"ENCODER2_REVERSE_DIRECTION","Title":"Encoder 2 reverse direction","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>1"}
-#define ENCODER2_ENABLE_HALFSTEPS 0	 //{"Name":"ENCODER2_ENABLE_HALFSTEPS","Title":"Encoder 2 steps mode","DefaultValue":"0","Type":"list","Condition":"ENABLED_ENCODERS_COUNT>=2","ListValues":"0,Full steps;1,Half steps"}
+#define ENCODER2_CLK_PIN 66 	//DIN_8		//{"Name":"ENCODER2_CLK_PIN","Title":"Encoder 2 output A (CLK) pin","DefaultValue":"11","Type":"pin;Encoder 2 CLK","Condition":"ENABLED_ENCODERS_COUNT>1"}
+#define ENCODER2_DT_PIN 68		//DIN_6		//{"Name":"ENCODER2_DT_PIN","Title":"Encoder 2 output B (DT) pin","DefaultValue":"12","Type":"pin;Encoder 2 DT","Condition":"ENABLED_ENCODERS_COUNT>1"}
+#define ENCODER2_BUTTON_PIN 67	//DIN_7		//{"Name":"ENCODER2_BUTTON_PIN","Title":"Encoder 2 button (SW) pin","DefaultValue":"13","Type":"pin;Encoder 2 SWITCH","Condition":"ENABLED_ENCODERS_COUNT>1","Min":-1}
+#define ENCODER2_ENABLE_PULLUP 0	 		//{"Name":"ENCODER2_ENABLE_PULLUP","Title":"Encoder 2 enable pullup resistor","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>1"}
+#define ENCODER2_REVERSE_DIRECTION 0 		//{"Name":"ENCODER2_REVERSE_DIRECTION","Title":"Encoder 2 reverse direction","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>1"}
+#define ENCODER2_ENABLE_HALFSTEPS 0	 		//{"Name":"ENCODER2_ENABLE_HALFSTEPS","Title":"Encoder 2 steps mode","DefaultValue":"0","Type":"list","Condition":"ENABLED_ENCODERS_COUNT>=2","ListValues":"0,Full steps;1,Half steps"}
 
-#define ENCODER3_CLK_PIN 7			 //{"Name":"ENCODER3_CLK_PIN","Title":"Encoder 3 output A (CLK) pin","DefaultValue":"7","Type":"pin;Encoder 3 CLK","Condition":"ENABLED_ENCODERS_COUNT>2"}
-#define ENCODER3_DT_PIN 8			 //{"Name":"ENCODER3_DT_PIN","Title":"Encoder 3 output B (DT) pin","DefaultValue":"8","Type":"pin;Encoder 3 DT","Condition":"ENABLED_ENCODERS_COUNT>2"}
-#define ENCODER3_BUTTON_PIN 9		 //{"Name":"ENCODER3_BUTTON_PIN","Title":"Encoder 3 button (SW) pin","DefaultValue":"9","Type":"pin;Encoder 3 SWITCH","Condition":"ENABLED_ENCODERS_COUNT>2","Min":-1}
+#define ENCODER3_CLK_PIN 8			 //{"Name":"ENCODER3_CLK_PIN","Title":"Encoder 3 output A (CLK) pin","DefaultValue":"7","Type":"pin;Encoder 3 CLK","Condition":"ENABLED_ENCODERS_COUNT>2"}
+#define ENCODER3_DT_PIN 9			 //{"Name":"ENCODER3_DT_PIN","Title":"Encoder 3 output B (DT) pin","DefaultValue":"8","Type":"pin;Encoder 3 DT","Condition":"ENABLED_ENCODERS_COUNT>2"}
+#define ENCODER3_BUTTON_PIN 10		 //{"Name":"ENCODER3_BUTTON_PIN","Title":"Encoder 3 button (SW) pin","DefaultValue":"9","Type":"pin;Encoder 3 SWITCH","Condition":"ENABLED_ENCODERS_COUNT>2","Min":-1}
 #define ENCODER3_ENABLE_PULLUP 0	 //{"Name":"ENCODER3_ENABLE_PULLUP","Title":"Encoder 3 enable pullup resistor","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>2"}
 #define ENCODER3_REVERSE_DIRECTION 0 //{"Name":"ENCODER3_REVERSE_DIRECTION","Title":"Encoder 3 reverse direction","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>2"}
 #define ENCODER3_ENABLE_HALFSTEPS 0	 //{"Name":"ENCODER3_ENABLE_HALFSTEPS","Title":"Encoder 3 steps mode","DefaultValue":"0","Type":"list","Condition":"ENABLED_ENCODERS_COUNT>=3","ListValues":"0,Full steps;1,Half steps"}
 
-#define ENCODER4_CLK_PIN 7			 //{"Name":"ENCODER4_CLK_PIN","Title":"Encoder 4 output A (CLK) pin","DefaultValue":"7","Type":"pin;Encoder 4 CLK","Condition":"ENABLED_ENCODERS_COUNT>3"}
-#define ENCODER4_DT_PIN 8			 //{"Name":"ENCODER4_DT_PIN","Title":"Encoder 4 output B (DT) pin","DefaultValue":"8","Type":"pin;Encoder 4 DT","Condition":"ENABLED_ENCODERS_COUNT>3"}
-#define ENCODER4_BUTTON_PIN 9		 //{"Name":"ENCODER4_BUTTON_PIN","Title":"Encoder 4 button (SW) pin","DefaultValue":"9","Type":"pin;Encoder 4 SWITCH","Condition":"ENABLED_ENCODERS_COUNT>3","Min":-1}
+#define ENCODER4_CLK_PIN 8			 //{"Name":"ENCODER4_CLK_PIN","Title":"Encoder 4 output A (CLK) pin","DefaultValue":"7","Type":"pin;Encoder 4 CLK","Condition":"ENABLED_ENCODERS_COUNT>3"}
+#define ENCODER4_DT_PIN 9			 //{"Name":"ENCODER4_DT_PIN","Title":"Encoder 4 output B (DT) pin","DefaultValue":"8","Type":"pin;Encoder 4 DT","Condition":"ENABLED_ENCODERS_COUNT>3"}
+#define ENCODER4_BUTTON_PIN 10		 //{"Name":"ENCODER4_BUTTON_PIN","Title":"Encoder 4 button (SW) pin","DefaultValue":"9","Type":"pin;Encoder 4 SWITCH","Condition":"ENABLED_ENCODERS_COUNT>3","Min":-1}
 #define ENCODER4_ENABLE_PULLUP 0	 //{"Name":"ENCODER4_ENABLE_PULLUP","Title":"Encoder 4 enable pullup resistor","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>3"}
 #define ENCODER4_REVERSE_DIRECTION 0 //{"Name":"ENCODER4_REVERSE_DIRECTION","Title":"Encoder 4 reverse direction","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>3"}
 #define ENCODER4_ENABLE_HALFSTEPS 0	 //{"Name":"ENCODER4_ENABLE_HALFSTEPS","Title":"Encoder 4 steps mode","DefaultValue":"0","Type":"list","Condition":"ENABLED_ENCODERS_COUNT>=4","ListValues":"0,Full steps;1,Half steps"}
 
-#define ENCODER5_CLK_PIN 7			 //{"Name":"ENCODER5_CLK_PIN","Title":"Encoder 5 output A (CLK) pin","DefaultValue":"7","Type":"pin;Encoder 5 CLK","Condition":"ENABLED_ENCODERS_COUNT>4"}
-#define ENCODER5_DT_PIN 8			 //{"Name":"ENCODER5_DT_PIN","Title":"Encoder 5 output B (DT) pin","DefaultValue":"8","Type":"pin;Encoder 5 DT","Condition":"ENABLED_ENCODERS_COUNT>4"}
-#define ENCODER5_BUTTON_PIN 9		 //{"Name":"ENCODER5_BUTTON_PIN","Title":"Encoder 5 button (SW) pin","DefaultValue":"9","Type":"pin;Encoder 5 SWITCH","Condition":"ENABLED_ENCODERS_COUNT>4","Min":-1}
+#define ENCODER5_CLK_PIN 8			 //{"Name":"ENCODER5_CLK_PIN","Title":"Encoder 5 output A (CLK) pin","DefaultValue":"7","Type":"pin;Encoder 5 CLK","Condition":"ENABLED_ENCODERS_COUNT>4"}
+#define ENCODER5_DT_PIN 9			 //{"Name":"ENCODER5_DT_PIN","Title":"Encoder 5 output B (DT) pin","DefaultValue":"8","Type":"pin;Encoder 5 DT","Condition":"ENABLED_ENCODERS_COUNT>4"}
+#define ENCODER5_BUTTON_PIN 10		 //{"Name":"ENCODER5_BUTTON_PIN","Title":"Encoder 5 button (SW) pin","DefaultValue":"9","Type":"pin;Encoder 5 SWITCH","Condition":"ENABLED_ENCODERS_COUNT>4","Min":-1}
 #define ENCODER5_ENABLE_PULLUP 0	 //{"Name":"ENCODER5_ENABLE_PULLUP","Title":"Encoder 5 enable pullup resistor","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>4"}
 #define ENCODER5_REVERSE_DIRECTION 0 //{"Name":"ENCODER5_REVERSE_DIRECTION","Title":"Encoder 5 reverse direction","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>4"}
 #define ENCODER5_ENABLE_HALFSTEPS 0	 //{"Name":"ENCODER5_ENABLE_HALFSTEPS","Title":"Encoder 5 steps mode","DefaultValue":"0","Type":"list","Condition":"ENABLED_ENCODERS_COUNT>=5","ListValues":"0,Full steps;1,Half steps"}
 
-#define ENCODER6_CLK_PIN 7			 //{"Name":"ENCODER6_CLK_PIN","Title":"Encoder 6 output A (CLK) pin","DefaultValue":"7","Type":"pin;Encoder 6 CLK","Condition":"ENABLED_ENCODERS_COUNT>5"}
-#define ENCODER6_DT_PIN 8			 //{"Name":"ENCODER6_DT_PIN","Title":"Encoder 6 output B (DT) pin","DefaultValue":"8","Type":"pin;Encoder 6 DT","Condition":"ENABLED_ENCODERS_COUNT>5"}
-#define ENCODER6_BUTTON_PIN 9		 //{"Name":"ENCODER6_BUTTON_PIN","Title":"Encoder 6 button (SW) pin","DefaultValue":"9","Type":"pin;Encoder 6 SWITCH","Condition":"ENABLED_ENCODERS_COUNT>5","Min":-1}
+#define ENCODER6_CLK_PIN 8			 //{"Name":"ENCODER6_CLK_PIN","Title":"Encoder 6 output A (CLK) pin","DefaultValue":"7","Type":"pin;Encoder 6 CLK","Condition":"ENABLED_ENCODERS_COUNT>5"}
+#define ENCODER6_DT_PIN 9			 //{"Name":"ENCODER6_DT_PIN","Title":"Encoder 6 output B (DT) pin","DefaultValue":"8","Type":"pin;Encoder 6 DT","Condition":"ENABLED_ENCODERS_COUNT>5"}
+#define ENCODER6_BUTTON_PIN 10		 //{"Name":"ENCODER6_BUTTON_PIN","Title":"Encoder 6 button (SW) pin","DefaultValue":"9","Type":"pin;Encoder 6 SWITCH","Condition":"ENABLED_ENCODERS_COUNT>5","Min":-1}
 #define ENCODER6_ENABLE_PULLUP 0	 //{"Name":"ENCODER6_ENABLE_PULLUP","Title":"Encoder 6 enable pullup resistor","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>5"}
 #define ENCODER6_REVERSE_DIRECTION 0 //{"Name":"ENCODER6_REVERSE_DIRECTION","Title":"Encoder 6 reverse direction","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>5"}
 #define ENCODER6_ENABLE_HALFSTEPS 0	 //{"Name":"ENCODER6_ENABLE_HALFSTEPS","Title":"Encoder 6 steps mode","DefaultValue":"0","Type":"list","Condition":"ENABLED_ENCODERS_COUNT>=6","ListValues":"0,Full steps;1,Half steps"}
 
-#define ENCODER7_CLK_PIN 7			 //{"Name":"ENCODER7_CLK_PIN","Title":"Encoder 7 output A (CLK) pin","DefaultValue":"7","Type":"pin;Encoder 7 CLK","Condition":"ENABLED_ENCODERS_COUNT>6"}
-#define ENCODER7_DT_PIN 8			 //{"Name":"ENCODER7_DT_PIN","Title":"Encoder 7 output B (DT) pin","DefaultValue":"8","Type":"pin;Encoder 7 DT","Condition":"ENABLED_ENCODERS_COUNT>6"}
-#define ENCODER7_BUTTON_PIN 9		 //{"Name":"ENCODER7_BUTTON_PIN","Title":"Encoder 7 button (SW) pin","DefaultValue":"9","Type":"pin;Encoder 7 SWITCH","Condition":"ENABLED_ENCODERS_COUNT>6","Min":-1}
+#define ENCODER7_CLK_PIN 8			 //{"Name":"ENCODER7_CLK_PIN","Title":"Encoder 7 output A (CLK) pin","DefaultValue":"7","Type":"pin;Encoder 7 CLK","Condition":"ENABLED_ENCODERS_COUNT>6"}
+#define ENCODER7_DT_PIN 9			 //{"Name":"ENCODER7_DT_PIN","Title":"Encoder 7 output B (DT) pin","DefaultValue":"8","Type":"pin;Encoder 7 DT","Condition":"ENABLED_ENCODERS_COUNT>6"}
+#define ENCODER7_BUTTON_PIN 10		 //{"Name":"ENCODER7_BUTTON_PIN","Title":"Encoder 7 button (SW) pin","DefaultValue":"9","Type":"pin;Encoder 7 SWITCH","Condition":"ENABLED_ENCODERS_COUNT>6","Min":-1}
 #define ENCODER7_ENABLE_PULLUP 0	 //{"Name":"ENCODER7_ENABLE_PULLUP","Title":"Encoder 7 enable pullup resistor","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>6"}
 #define ENCODER7_REVERSE_DIRECTION 0 //{"Name":"ENCODER7_REVERSE_DIRECTION","Title":"Encoder 7 reverse direction","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>6"}
 #define ENCODER7_ENABLE_HALFSTEPS 0	 //{"Name":"ENCODER7_ENABLE_HALFSTEPS","Title":"Encoder 7 steps mode","DefaultValue":"0","Type":"list","Condition":"ENABLED_ENCODERS_COUNT>=7","ListValues":"0,Full steps;1,Half steps"}
 
-#define ENCODER8_CLK_PIN 7			 //{"Name":"ENCODER8_CLK_PIN","Title":"Encoder 8 output A (CLK) pin","DefaultValue":"7","Type":"pin;Encoder 8 CLK","Condition":"ENABLED_ENCODERS_COUNT>7"}
-#define ENCODER8_DT_PIN 8			 //{"Name":"ENCODER8_DT_PIN","Title":"Encoder 8 output B (DT) pin","DefaultValue":"8","Type":"pin;Encoder 8 DT","Condition":"ENABLED_ENCODERS_COUNT>7"}
-#define ENCODER8_BUTTON_PIN 9		 //{"Name":"ENCODER8_BUTTON_PIN","Title":"Encoder 8 button (SW) pin","DefaultValue":"9","Type":"pin;Encoder 8 SWITCH","Condition":"ENABLED_ENCODERS_COUNT>7","Min":-1}
+#define ENCODER8_CLK_PIN 8			 //{"Name":"ENCODER8_CLK_PIN","Title":"Encoder 8 output A (CLK) pin","DefaultValue":"7","Type":"pin;Encoder 8 CLK","Condition":"ENABLED_ENCODERS_COUNT>7"}
+#define ENCODER8_DT_PIN 9			 //{"Name":"ENCODER8_DT_PIN","Title":"Encoder 8 output B (DT) pin","DefaultValue":"8","Type":"pin;Encoder 8 DT","Condition":"ENABLED_ENCODERS_COUNT>7"}
+#define ENCODER8_BUTTON_PIN 10		 //{"Name":"ENCODER8_BUTTON_PIN","Title":"Encoder 8 button (SW) pin","DefaultValue":"9","Type":"pin;Encoder 8 SWITCH","Condition":"ENABLED_ENCODERS_COUNT>7","Min":-1}
 #define ENCODER8_ENABLE_PULLUP 0	 //{"Name":"ENCODER8_ENABLE_PULLUP","Title":"Encoder 8 enable pullup resistor","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>7"}
 #define ENCODER8_REVERSE_DIRECTION 0 //{"Name":"ENCODER8_REVERSE_DIRECTION","Title":"Encoder 8 reverse direction","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>7"}
 #define ENCODER8_ENABLE_HALFSTEPS 0	 //{"Name":"ENCODER8_ENABLE_HALFSTEPS","Title":"Encoder 8 steps mode","DefaultValue":"0","Type":"list","Condition":"ENABLED_ENCODERS_COUNT>=8","ListValues":"0,Full steps;1,Half steps"}
@@ -1144,7 +1150,7 @@ void buttonMatrixStatusChanged(int buttonId, byte Status)
 #endif
 
 /***************************************************************************************************/
-/*****                            ####  ###### ###### #    # #####
+/*****                             ####  ###### ###### #    # #####
 /*****                            #      #        ##   #    # #    #
 /*****                             ####  ####     ##   #    # #####
 /*****                                 # #        ##   #    # #
@@ -1164,17 +1170,15 @@ void setup()
 	shFUELPIN.SetValue((int)80);
 #endif
 
-//TODO: Test order of intiation FlowSerialBegin and Joystick.begin on STM32 & AVR MCUs and clean up next section(s)
 	delay(1000); // Delay startup to establish Serial
 		// FlowSerialBegin(19200);
 	#if defined(ARDUINO_OPENFFBOARD_F407VG) && defined(INCLUDE_GAMEPAD)
 		Joystick.begin(false);
 	#endif
-		FlowSerialBegin(115200); 
+		FlowSerialBegin(19200); //was 115200 
 	#if defined(INCLUDE_GAMEPAD) && !defined(ARDUINO_OPENFFBOARD_F407VG)
 		Joystick.begin(false);
 	#endif
-//END TODO
 
 #ifdef INCLUDE_TM1638
 	TM1638_Init();

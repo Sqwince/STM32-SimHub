@@ -6,14 +6,14 @@
 
 // Descriptor constants
 #define STM32GAMEPAD_REPORT_ID 0x03
-#define STM32GAMEPAD_BUTTON_COUNT 128   //TODO: Verify if 32 or 128 should be used. Suggested to use 128 due to button matrix indicies.
-#define STM32GAMEPAD_AXIS_SAMPLING 10   //TODO: Try different sampling rates for performance testing
+#define STM32GAMEPAD_BUTTON_COUNT 128 // TODO: Verify if 32 or 128 should be used. Suggested to use 128 due to button matrix indicies.
+#define STM32GAMEPAD_AXIS_SAMPLING 10 // TODO: Try different sampling rates for performance testing
 #define STM32GAMEPAD_AXIS_MINVALUE 0
-#define STM32GAMEPAD_AXIS_MAXVALUE 1023 //TODO: Try using 4095 for 12-bit precision later to match STM32 ADC resolution.
-
+#define STM32GAMEPAD_AXIS_MAXVALUE 1023 // TODO: Try using 4095 for 12-bit precision later to match STM32 ADC resolution.
 
 // Actual packet sent to the PC.
-struct __attribute__((packed)) STM32GamepadReport {
+struct __attribute__((packed)) STM32GamepadReport
+{
 	uint8_t buttons[STM32GAMEPAD_BUTTON_COUNT / 8];
 	uint16_t axis1;
 	uint16_t axis2;
@@ -27,88 +27,103 @@ static uint8_t const STM32GamepadReportDesc[] = {
 	HID_USAGE_PAGE(HID_USAGE_PAGE_DESKTOP),
 	HID_USAGE(HID_USAGE_DESKTOP_GAMEPAD),
 	HID_COLLECTION(HID_COLLECTION_APPLICATION),
-		HID_REPORT_ID(STM32GAMEPAD_REPORT_ID)
+	HID_REPORT_ID(STM32GAMEPAD_REPORT_ID)
 
 		HID_USAGE_PAGE(HID_USAGE_PAGE_BUTTON),
-		HID_USAGE_MIN(1),
-		0x2A, (uint8_t)(STM32GAMEPAD_BUTTON_COUNT & 0xFF), (uint8_t)(STM32GAMEPAD_BUTTON_COUNT >> 8), // Usage Maximum, 2 bytes
-		HID_LOGICAL_MIN(0),
-		HID_LOGICAL_MAX(1),
-		HID_REPORT_SIZE(1),
-		0x96, (uint8_t)(STM32GAMEPAD_BUTTON_COUNT & 0xFF), (uint8_t)(STM32GAMEPAD_BUTTON_COUNT >> 8), // Report Count, 2 bytes
-		HID_INPUT(HID_DATA | HID_VARIABLE | HID_ABSOLUTE),
+	HID_USAGE_MIN(1),
+	0x2A, (uint8_t)(STM32GAMEPAD_BUTTON_COUNT & 0xFF), (uint8_t)(STM32GAMEPAD_BUTTON_COUNT >> 8), // Usage Maximum, 2 bytes
+	HID_LOGICAL_MIN(0),
+	HID_LOGICAL_MAX(1),
+	HID_REPORT_SIZE(1),
+	0x96, (uint8_t)(STM32GAMEPAD_BUTTON_COUNT & 0xFF), (uint8_t)(STM32GAMEPAD_BUTTON_COUNT >> 8), // Report Count, 2 bytes
+	HID_INPUT(HID_DATA | HID_VARIABLE | HID_ABSOLUTE),
 
-		HID_USAGE_PAGE(HID_USAGE_PAGE_DESKTOP),
-		HID_USAGE(HID_USAGE_DESKTOP_X),
-		HID_USAGE(HID_USAGE_DESKTOP_Y),
-		HID_USAGE(HID_USAGE_DESKTOP_Z),
-		HID_USAGE(HID_USAGE_DESKTOP_RX),
-		HID_LOGICAL_MIN(STM32GAMEPAD_AXIS_MINVALUE),
-		HID_LOGICAL_MAX_N(STM32GAMEPAD_AXIS_MAXVALUE, 2),
-		HID_REPORT_SIZE(16),
-		HID_REPORT_COUNT(4),
-		HID_INPUT(HID_DATA | HID_VARIABLE | HID_ABSOLUTE),
+	HID_USAGE_PAGE(HID_USAGE_PAGE_DESKTOP),
+	HID_USAGE(HID_USAGE_DESKTOP_X),
+	HID_USAGE(HID_USAGE_DESKTOP_Y),
+	HID_USAGE(HID_USAGE_DESKTOP_Z),
+	HID_USAGE(HID_USAGE_DESKTOP_RX),
+	HID_LOGICAL_MIN(STM32GAMEPAD_AXIS_MINVALUE),
+	HID_LOGICAL_MAX_N(STM32GAMEPAD_AXIS_MAXVALUE, 2),
+	HID_REPORT_SIZE(16),
+	HID_REPORT_COUNT(4),
+	HID_INPUT(HID_DATA | HID_VARIABLE | HID_ABSOLUTE),
 
-	HID_COLLECTION_END
-};
+	HID_COLLECTION_END};
 
 // TinyUSB gamepad wrapper. This replaces the old Joystick_ object.
-class STM32Gamepad {
+class STM32Gamepad
+{
 private:
 	Adafruit_USBD_HID hid;
 	STM32GamepadReport report;
 	bool autoSendState = true;
 
 public:
-	void begin(bool initAutoSendState = true) {
+	void begin(bool initAutoSendState = true)
+	{
 		autoSendState = initAutoSendState;
 		memset(&report, 0, sizeof(report));
 
-		if (!TinyUSBDevice.isInitialized()) {
+		if (!TinyUSBDevice.isInitialized())
+		{
 			TinyUSBDevice.begin(0);
 		}
 
+		TinyUSBDevice.setID(0x2341, 0x8037); // Fake an Arduino Micro for SimHub to recognize.
+		TinyUSBDevice.setManufacturerDescriptor("Arduino");
+		TinyUSBDevice.setProductDescriptor(DEVICE_NAME);
+
 		hid.setReportDescriptor(STM32GamepadReportDesc, sizeof(STM32GamepadReportDesc));
-		hid.setPollInterval(2);   //TODO: Adjust polling interval for better performance if needed.
+		hid.setPollInterval(2); // TODO: Adjust polling interval for better performance if needed.
 		hid.begin();
 
-		if (TinyUSBDevice.mounted()) {
+		if (TinyUSBDevice.mounted())
+		{
 			TinyUSBDevice.detach();
 			delay(10);
 			TinyUSBDevice.attach();
 		}
 	}
 
-	void update() {
+	void update()
+	{
 #ifdef TINYUSB_NEED_POLLING_TASK
 		TinyUSBDevice.task();
 #endif
 	}
 
-	void setButton(uint8_t button, uint8_t value) {
-		if (button >= STM32GAMEPAD_BUTTON_COUNT) {
+	void setButton(uint8_t button, uint8_t value)
+	{
+		if (button >= STM32GAMEPAD_BUTTON_COUNT)
+		{
 			return;
 		}
 
 		uint8_t byteIndex = button / 8;
 		uint8_t bitMask = 1 << (button % 8);
 
-		if (value) {
+		if (value)
+		{
 			report.buttons[byteIndex] |= bitMask;
 		}
-		else {
+		else
+		{
 			report.buttons[byteIndex] &= ~bitMask;
 		}
 
-		if (autoSendState) {
+		if (autoSendState)
+		{
 			sendState();
 		}
 	}
 
-	void setAxis(uint8_t axis, uint16_t value) {
+	void setAxis(uint8_t axis, uint16_t value)
+	{
 		value = constrain(value, STM32GAMEPAD_AXIS_MINVALUE, STM32GAMEPAD_AXIS_MAXVALUE);
 
-		switch (axis) {
+		switch (axis)
+		{
 		case 0:
 			report.axis1 = value;
 			break;
@@ -125,7 +140,8 @@ public:
 			return;
 		}
 
-		if (autoSendState) {
+		if (autoSendState)
+		{
 			sendState();
 		}
 	}
@@ -135,18 +151,20 @@ public:
 	void setAxis3(uint16_t value) { setAxis(2, value); }
 	void setAxis4(uint16_t value) { setAxis(3, value); }
 
-	void sendState() {
+	void sendState()
+	{
 		update();
 
-		if (hid.ready()) {
+		if (hid.ready())
+		{
 			hid.sendReport(STM32GAMEPAD_REPORT_ID, &report, sizeof(report));
 		}
 	}
 };
 
-
 // One analog input mapped to one axis in the STM32Gamepad report.
-class STM32GamepadAxis {
+class STM32GamepadAxis
+{
 private:
 	int lastAxisValue = -1;
 	int axisPin = -1;
@@ -154,24 +172,28 @@ private:
 	int minimumInputValue = 0;
 	int maximumInputValue = 1023;
 	int samplingRate = STM32GAMEPAD_AXIS_SAMPLING;
-	STM32Gamepad* joystick = NULL;
+	STM32Gamepad *joystick = NULL;
 	float exponentialFactor = 1;
 
-	float analogReadXXbit(uint8_t analogPin, uint8_t bits_of_precision) {
+	float analogReadXXbit(uint8_t analogPin, uint8_t bits_of_precision)
+	{
 		uint8_t n = bits_of_precision > 10 ? bits_of_precision - 10 : 0;
 		unsigned long oversample_num = 1UL << (2 * n);
 		uint8_t divisor = 1 << n;
 		unsigned long inner_sum = 0;
 
-		for (unsigned long j = 0; j < oversample_num; j++) {
+		for (unsigned long j = 0; j < oversample_num; j++)
+		{
 			inner_sum += analogRead(analogPin);
 		}
 
 		return (float)((inner_sum + (unsigned long)divisor / 2UL) >> n);
 	}
 
-	void setAxis(int axisIdx, int value) {
-		if (joystick == NULL) {
+	void setAxis(int axisIdx, int value)
+	{
+		if (joystick == NULL)
+		{
 			return;
 		}
 
@@ -180,7 +202,8 @@ private:
 	}
 
 public:
-	STM32GamepadAxis(byte axisPin, int axisIdx, int minimumInputValue, int maximumInputValue, int samplingRate, double exponentialFactor = 1) {
+	STM32GamepadAxis(byte axisPin, int axisIdx, int minimumInputValue, int maximumInputValue, int samplingRate, double exponentialFactor = 1)
+	{
 		this->axisIdx = axisIdx;
 		this->axisPin = axisPin;
 		this->minimumInputValue = minimumInputValue;
@@ -189,15 +212,18 @@ public:
 		this->exponentialFactor = exponentialFactor;
 	}
 
-	void SetJoystick(STM32Gamepad* joystick) {
+	void SetJoystick(STM32Gamepad *joystick)
+	{
 		this->joystick = joystick;
 		read();
 	}
 
-	bool read() {
+	bool read()
+	{
 		int pot = analogReadXXbit(axisPin, samplingRate);
 
-		if (lastAxisValue == pot) {
+		if (lastAxisValue == pot)
+		{
 			return false;
 		}
 
@@ -206,7 +232,8 @@ public:
 		int mapped = map(pot, minimumInputValue, maximumInputValue, STM32GAMEPAD_AXIS_MINVALUE, STM32GAMEPAD_AXIS_MAXVALUE);
 		float mapped2 = min(1.0f, max(0.0f, (float)mapped / (float)STM32GAMEPAD_AXIS_MAXVALUE));
 
-		if (exponentialFactor != 1) {
+		if (exponentialFactor != 1)
+		{
 			mapped2 = pow(mapped2, 1.0f / exponentialFactor);
 		}
 

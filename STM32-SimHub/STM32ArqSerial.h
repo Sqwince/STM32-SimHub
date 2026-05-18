@@ -4,6 +4,10 @@
 #include <Arduino.h>
 #include "RingBuffer.h"
 
+#ifdef TINYUSB_NEED_POLLING_TASK
+#include "Adafruit_TinyUSB.h"
+#endif
+
 // =======================================================
 // CRC-8 TABLE (same as original, AVR -> STM32 safe)
 // =======================================================
@@ -74,6 +78,13 @@ private:
 
     uint32_t lastByteTime = 0;
 
+    void pollUsb()
+    {
+#ifdef TINYUSB_NEED_POLLING_TASK
+        TinyUSBDevice.task();
+#endif
+    }
+
     // =======================================================
     // RESET PACKET STATE
     // =======================================================
@@ -91,6 +102,7 @@ private:
     {
         Serial.write(0x03);
         Serial.write(id);
+        Serial.flush();
     }
 
     void sendNAck(uint8_t last, uint8_t reason)
@@ -98,6 +110,7 @@ private:
         Serial.write(0x04);
         Serial.write(last);
         Serial.write(reason);
+        Serial.flush();
     }
 
     // =======================================================
@@ -196,12 +209,15 @@ public:
     void update()
     {
 
+        pollUsb();
+
         if (idleFunction)
             idleFunction(false);
 
         while (Serial.available())
         {
             processByte((uint8_t)Serial.read());
+            pollUsb();
         }
 
         // timeout safety reset
@@ -231,6 +247,8 @@ public:
 
             if (idleFunction)
                 idleFunction(false);
+
+            pollUsb();
         } while (millis() - start < 400);
 
         return -1;
