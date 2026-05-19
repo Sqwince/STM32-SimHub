@@ -1,0 +1,55 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${default}",
+                "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/hardware/stm32/2.12.0/variants/STM32F4xx/F407V(E-G)T_F417V(E-G)T",
+                "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/hardware/stm32/2.12.0/system/STM32F4xx",
+                "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/hardware/stm32/2.12.0/system/Drivers/CMSIS/Device/ST/STM32F4xx/Include",
+                "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/tools/CMSIS/6.2.0/CMSIS/Core/Include",
+                "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/hardware/stm32/2.12.0/libraries/SrcWrapper/inc/LL",
+                "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/hardware/stm32/2.12.0/libraries/USBDevice/inc",
+                "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/hardware/stm32/2.12.0/system/Middlewares/ST/STM32_USB_Device_Library/Core/Inc",
+                "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/hardware/stm32/2.12.0/system/Drivers/STM32F4xx_HAL_Driver/Inc",
+                "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/hardware/stm32/2.12.0/libraries/SrcWrapper/src",
+                "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/hardware/stm32/2.12.0/libraries/SrcWrapper/inc",
+                "${workspaceFolder}/STM32-SimHub",
+                "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/hardware/stm32/2.12.0/cores/arduino",
+                "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/hardware/stm32/2.12.0/cores/arduino/avr",
+                "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/hardware/stm32/2.12.0/libraries/SPI/src",
+                "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/hardware/stm32/2.12.0/libraries/EEPROM/src",
+                "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/hardware/stm32/2.12.0/libraries/EEPROM/src/utility",
+                "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/hardware/stm32/2.12.0/libraries/Wire/src",
+                "D:/LOCAL/Arduino Sketches/libraries/FastLED/src",
+                "D:/LOCAL/Arduino Sketches/libraries/Adafruit_GFX_Library",
+                "D:/LOCAL/Arduino Sketches/libraries/Adafruit_TinyUSB_Library/src",
+                "D:/LOCAL/Arduino Sketches/libraries/ArduinoJoystickLibrary/src"
+            ],
+            "defines": [
+                "STM32F4xx",
+                "STM32F407xx",
+                "ARDUINO=10819",
+                "ARDUINO_ARCH_STM32",
+                "ARDUINO_OPENFFBOARD_F407VG",
+                "BOARD_NAME=\"OPENFFBOARD_F407VG\"",
+                "VARIANT_H=\"variant_OpenFFBoard_F407VG.h\"",
+                "USBCON",
+                "USBD_USE_CDC",
+                "HAL_PCD_MODULE_ENABLED"
+            ],
+            "compilerPath": "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/tools/xpack-arm-none-eabi-gcc/14.2.1-1.1/bin/arm-none-eabi-gcc.exe",
+            "intelliSenseMode": "windows-gcc-arm",
+            "cppStandard": "c++17",
+            "browse": {
+                "path": [
+                    "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/hardware/stm32/2.12.0",
+                    "D:/LOCAL/Arduino Sketches/libraries",
+                    "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/tools",
+                    "C:/Users/sqwin/AppData/Local/Arduino15/packages/STMicroelectronics/hardware/stm32/2.12.0/system"
+                ]
+            }
+        }
+    ],
+    "version": 4
+}
