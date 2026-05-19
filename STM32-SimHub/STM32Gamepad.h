@@ -71,7 +71,7 @@ public:
 		}
 
 		TinyUSBDevice.setID(0x2341, 0x8037); // Fake an Arduino Micro for SimHub to recognize.
-		TinyUSBDevice.setManufacturerDescriptor("Arduino");
+		TinyUSBDevice.setManufacturerDescriptor("OpenFFBoard");
 		TinyUSBDevice.setProductDescriptor(DEVICE_NAME);
 
 		hid.setReportDescriptor(STM32GamepadReportDesc, sizeof(STM32GamepadReportDesc));

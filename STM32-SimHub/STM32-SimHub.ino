@@ -90,7 +90,7 @@
 #include "SHButton.h"
 
 // ----------------------------------------------------- HW SETTINGS, PLEASE REVIEW ALL -------------------------------------------
-#define DEVICE_NAME "Arduino Micro" //{"Group":"General","Name":"DEVICE_NAME","Title":"Device name,\r\n make sure to use a unique name when using multiple arduinos","DefaultValue":"SimHub Dash","Type":"string","Template":"#define DEVICE_NAME \"{0}\""}
+#define DEVICE_NAME "SHWheel" //{"Group":"General","Name":"DEVICE_NAME","Title":"Device name,\r\n make sure to use a unique name when using multiple arduinos","DefaultValue":"SimHub Dash","Type":"string","Template":"#define DEVICE_NAME \"{0}\""}
 // #define DEVICE_UNIQUE_ID "f362fa4b-6a37-4f37-93be-2b8316194f04" //{"UniqueId":"f362fa4b-6a37-4f37-93be-2b8316194f04","Name":"DEVICE_UNIQUE_ID","Type":"uniqueid"}
 #define DEVICE_UNIQUE_ID "0100fdd7-be5a-4808-91f5-05002bc60f72" // Woring unique ID.
 
@@ -245,7 +245,7 @@ SHMatrixHT16H33SingleColor shMatrixHT16H33SingleColor;
 #define WS2812B_DATAPIN 31	//PB15 		//{"Name":"WS2812B_DATAPIN","Title":"Data (DIN) digital pin number","DefaultValue":"6","Type":"pin;WS2812B LEDS DATA","Condition":"WS2812B_RGBLEDCOUNT>0"}
 #define WS2812B_RGBENCODING 0			//{"Name":"WS2812B_RGBENCODING","Title":"WS2812B RGB encoding\r\nSet to 0 for GRB, 1 for RGB encoding, 2 for BRG encoding","DefaultValue":"0","Type":"list","Condition":"WS2812B_RGBLEDCOUNT>0","ListValues":"0,GRB encoding;1,RGB encoding;2,BRG encoding"}
 #define WS2812B_RIGHTTOLEFT 0		    //{"Name":"WS2812B_RIGHTTOLEFT","Title":"Reverse led order ","DefaultValue":"0","Type":"bool","Condition":"WS2812B_RGBLEDCOUNT>0"}
-#define WS2812B_TESTMODE 1			    //{"Name":"WS2812B_TESTMODE","Title":"TESTING MODE : Light up all configured leds (in red color) at arduino startup\r\nIt will clear after simhub connection","DefaultValue":"0","Type":"bool","Condition":"WS2812B_RGBLEDCOUNT>0"}
+#define WS2812B_TESTMODE 0			    //{"Name":"WS2812B_TESTMODE","Title":"TESTING MODE : Light up all configured leds (in red color) at arduino startup\r\nIt will clear after simhub connection","DefaultValue":"0","Type":"bool","Condition":"WS2812B_RGBLEDCOUNT>0"}
 #define WS2812B_USEADAFRUITLIBRARY 0    //{"Name":"WS2812B_USEADAFRUITLIBRARY","Title":"ADVANCED : Use legacy adafruit library (only enable if you have sketch size issues)","DefaultValue":"0","Type":"bool","Condition":"WS2812B_RGBLEDCOUNT>0"}
 
 #if (WS2812B_USEADAFRUITLIBRARY == 0)
@@ -477,30 +477,30 @@ SHPWMPin shCONSPIN(CONS_PIN, 40);
 #ifdef INCLUDE_GAMEPAD
 
 // Analog Joystick Axis1
-#define GAMEPAD_AXIS_01_ENABLED 1			    	//{"Group":"Gamepad analog axis","Name":"GAMEPAD_AXIS_01_ENABLED","Title":"Throttle axis enabled","DefaultValue":"0","Type":"bool"}
-#define GAMEPAD_AXIS_01_PIN AIN_1 //PA3				//{"Name":"GAMEPAD_AXIS_01_PIN","Title":"Axis01 analog pin","DefaultValue":"0","Type":"pin;Axis01 input","Condition":"GAMEPAD_AXIS_01_ENABLED>0"}
+#define GAMEPAD_AXIS_01_ENABLED 1			    	  //{"Group":"Gamepad analog axis","Name":"GAMEPAD_AXIS_01_ENABLED","Title":"Throttle axis enabled","DefaultValue":"0","Type":"bool"}
+#define GAMEPAD_AXIS_01_PIN AIN_4 //PC2			  //{"Name":"GAMEPAD_AXIS_01_PIN","Title":"Axis01 analog pin","DefaultValue":"0","Type":"pin;Axis01 input","Condition":"GAMEPAD_AXIS_01_ENABLED>0"}
 #define GAMEPAD_AXIS_01_MINVALUE 0			    	//{"Name":"GAMEPAD_AXIS_01_MINVALUE","Title":"Throttle axis analog minimum value","DefaultValue":"0","Type":"int","Condition":"GAMEPAD_AXIS_01_ENABLED>0"}
 #define GAMEPAD_AXIS_01_MAXVALUE 1023		   	 	//{"Name":"GAMEPAD_AXIS_01_MAXVALUE","Title":"Throttle axis analog maximum value","DefaultValue":"1023","Type":"int","Condition":"GAMEPAD_AXIS_01_ENABLED>0"}
 #define GAMEPAD_AXIS_01_SAMPLING 10			    	//{"Name":"GAMEPAD_AXIS_01_SAMPLING","Title":"Throttle axis analog sampling precision","DefaultValue":"10","Type":"list","Condition":"GAMEPAD_AXIS_01_ENABLED>0","ListValues":"10,10 bits(default 0->1024);11,11 bits oversampling (slower 0->2048)"}
-#define GAMEPAD_AXIS_01_EXPONENTIALFACTOR 1			//{"Name":"GAMEPAD_AXIS_01_EXPONENTIALFACTOR","Title":"Throttle axis exponential correction","DefaultValue":"1","Type":"double","Condition":"GAMEPAD_AXIS_01_ENABLED>0","dMin":0.1,"dMax":1.9}
+#define GAMEPAD_AXIS_01_EXPONENTIALFACTOR 1		//{"Name":"GAMEPAD_AXIS_01_EXPONENTIALFACTOR","Title":"Throttle axis exponential correction","DefaultValue":"1","Type":"double","Condition":"GAMEPAD_AXIS_01_ENABLED>0","dMin":0.1,"dMax":1.9}
 // Analog Joystick Axis2
-#define GAMEPAD_AXIS_02_ENABLED 1					//{"Name":"GAMEPAD_AXIS_02_ENABLED","Title":"Accelerator axis enabled","DefaultValue":"0","Type":"bool"}
-#define GAMEPAD_AXIS_02_PIN AIN_2 //PA2				//{"Name":"GAMEPAD_AXIS_02_PIN","Title":"Accelerator axis analog pin","DefaultValue":"0","Type":"pin;Accelerator input","Condition":"GAMEPAD_AXIS_02_ENABLED>0"}
+#define GAMEPAD_AXIS_02_ENABLED 1					  //{"Name":"GAMEPAD_AXIS_02_ENABLED","Title":"Accelerator axis enabled","DefaultValue":"0","Type":"bool"}
+#define GAMEPAD_AXIS_02_PIN AIN_2 //PA2	    //{"Name":"GAMEPAD_AXIS_02_PIN","Title":"Accelerator axis analog pin","DefaultValue":"0","Type":"pin;Accelerator input","Condition":"GAMEPAD_AXIS_02_ENABLED>0"}
 #define GAMEPAD_AXIS_02_MINVALUE 0					//{"Name":"GAMEPAD_AXIS_02_MINVALUE","Title":"Accelerator axis analog minimum value","DefaultValue":"0","Type":"int","Condition":"GAMEPAD_AXIS_02_ENABLED>0"}
 #define GAMEPAD_AXIS_02_MAXVALUE 1023				//{"Name":"GAMEPAD_AXIS_02_MAXVALUE","Title":"Accelerator axis analog maximum value","DefaultValue":"1023","Type":"int","Condition":"GAMEPAD_AXIS_02_ENABLED>0"}
 #define GAMEPAD_AXIS_02_SAMPLING 10					//{"Name":"GAMEPAD_AXIS_02_SAMPLING","Title":"Accelerator axis analog sampling precision","DefaultValue":"10","Type":"list","Condition":"GAMEPAD_AXIS_02_ENABLED>0","ListValues":"10,10 bits(default 0->1024);11,11 bits oversampling (slower 0->2048)"}
 #define GAMEPAD_AXIS_02_EXPONENTIALFACTOR 1 		//{"Name":"GAMEPAD_AXIS_02_EXPONENTIALFACTOR","Title":"Accelerator axis exponential correction","DefaultValue":"1","Type":"double","Condition":"GAMEPAD_AXIS_02_ENABLED>0","dMin":0.1,"dMax":1.9}
 // Analog Joystick Axis3
-#define GAMEPAD_AXIS_03_ENABLED 1					//{"Name":"GAMEPAD_AXIS_03_ENABLED","Title":"Brake axis enabled","DefaultValue":"0","Type":"bool"}
-#define GAMEPAD_AXIS_03_PIN AIN_3 //PC3				//{"Name":"GAMEPAD_AXIS_03_PIN","Title":"Brake axis analog pin","DefaultValue":"0","Type":"pin;Brake input","Condition":"GAMEPAD_AXIS_03_ENABLED>0"}
+#define GAMEPAD_AXIS_03_ENABLED 1					  //{"Name":"GAMEPAD_AXIS_03_ENABLED","Title":"Brake axis enabled","DefaultValue":"0","Type":"bool"}
+#define GAMEPAD_AXIS_03_PIN AIN_3 //PC3 		//{"Name":"GAMEPAD_AXIS_03_PIN","Title":"Brake axis analog pin","DefaultValue":"0","Type":"pin;Brake input","Condition":"GAMEPAD_AXIS_03_ENABLED>0"}
 #define GAMEPAD_AXIS_03_MINVALUE 0					//{"Name":"GAMEPAD_AXIS_03_MINVALUE","Title":"Brake axis analog minimum value","DefaultValue":"0","Type":"int","Condition":"GAMEPAD_AXIS_03_ENABLED>0"}
 #define GAMEPAD_AXIS_03_MAXVALUE 1023				//{"Name":"GAMEPAD_AXIS_03_MAXVALUE","Title":"Brake axis analog maximum value","DefaultValue":"1023","Type":"int","Condition":"GAMEPAD_AXIS_03_ENABLED>0"}
 #define GAMEPAD_AXIS_03_SAMPLING 10					//{"Name":"GAMEPAD_AXIS_03_SAMPLING","Title":"Brake axis analog sampling precision","DefaultValue":"10","Type":"list","Condition":"GAMEPAD_AXIS_03_ENABLED>0","ListValues":"10,10 bits(default 0->1024);11,11 bits oversampling (slower 0->2048)"}
 #define GAMEPAD_AXIS_03_EXPONENTIALFACTOR 1 		//{"Name":"GAMEPAD_AXIS_03_EXPONENTIALFACTOR","Title":"Brake axis exponential correction","DefaultValue":"1","Type":"double","Condition":"GAMEPAD_AXIS_03_ENABLED>0","dMin":0.1,"dMax":1.9}
 //Analog Joystick Axis4 (STM32 only)
 #if defined(ARDUINO_OPENFFBOARD_F407VG)
-#define GAMEPAD_AXIS_04_ENABLED 1					//{"Name":"GAMEPAD_AXIS_04_ENABLED","Title":"Steering axis enabled","DefaultValue":"0","Type":"bool"}
-#define GAMEPAD_AXIS_04_PIN AIN_4 //PC2				//{"Name":"GAMEPAD_AXIS_04_PIN","Title":"Steering axis analog pin","DefaultValue":"0","Type":"pin;Steering input","Condition":"GAMEPAD_AXIS_04_ENABLED>0"}
+#define GAMEPAD_AXIS_04_ENABLED 1					  //{"Name":"GAMEPAD_AXIS_04_ENABLED","Title":"Steering axis enabled","DefaultValue":"0","Type":"bool"}
+#define GAMEPAD_AXIS_04_PIN AIN_1 //PA3			//{"Name":"GAMEPAD_AXIS_04_PIN","Title":"Steering axis analog pin","DefaultValue":"0","Type":"pin;Steering input","Condition":"GAMEPAD_AXIS_04_ENABLED>0"}
 #define GAMEPAD_AXIS_04_MINVALUE 0					//{"Name":"GAMEPAD_AXIS_04_MINVALUE","Title":"Steering axis analog minimum value","DefaultValue":"0","Type":"int","Condition":"GAMEPAD_AXIS_04_ENABLED>0"}
 #define GAMEPAD_AXIS_04_MAXVALUE 1023				//{"Name":"GAMEPAD_AXIS_04_MAXVALUE","Title":"Steering axis analog maximum value","DefaultValue":"1023","Type":"int","Condition":"GAMEPAD_AXIS_04_ENABLED>0"}
 #define GAMEPAD_AXIS_04_SAMPLING 10					//{"Name":"GAMEPAD_AXIS_04_SAMPLING","Title":"Steering axis analog sampling precision","DefaultValue":"10","Type":"list","Condition":"GAMEPAD_AXIS_04_ENABLED>0","ListValues":"10,10 bits(default 0->1０２４);1１,１１ bits oversampling (slower ０->２０４８)"}
@@ -642,15 +642,15 @@ SHDebouncer ButtonsDebouncer(10);
 #ifdef INCLUDE_ENCODERS
 #include "SHRotaryEncoder.h"
 
-#define ENCODER1_CLK_PIN 70		//DIN_4		//{"Name":"ENCODER1_CLK_PIN","Title":"Encoder 1 output A (CLK) pin","DefaultValue":"70","Type":"pin;Encoder 1 CLK","Condition":"ENABLED_ENCODERS_COUNT>0"}
-#define ENCODER1_DT_PIN 46		//DIN_2		//{"Name":"ENCODER1_DT_PIN","Title":"Encoder 1 output B (DT) pin","DefaultValue":"46","Type":"pin;Encoder 1 DT","Condition":"ENABLED_ENCODERS_COUNT>0"}
+#define ENCODER1_CLK_PIN 23		//PIN_USART1_RX		//{"Name":"ENCODER1_CLK_PIN","Title":"Encoder 1 output A (CLK) pin","DefaultValue":"70","Type":"pin;Encoder 1 CLK","Condition":"ENABLED_ENCODERS_COUNT>0"}
+#define ENCODER1_DT_PIN 22		//PIN_USART1_TX		//{"Name":"ENCODER1_DT_PIN","Title":"Encoder 1 output B (DT) pin","DefaultValue":"46","Type":"pin;Encoder 1 DT","Condition":"ENABLED_ENCODERS_COUNT>0"}
 #define ENCODER1_BUTTON_PIN 47	//DIN_1		//{"Name":"ENCODER1_BUTTON_PIN","Title":"Encoder 1 button (SW) pin","DefaultValue":"47","Type":"pin;Encoder 1 SWITCH","Condition":"ENABLED_ENCODERS_COUNT>0","Min":-1}
 #define ENCODER1_ENABLE_PULLUP 0	 		//{"Name":"ENCODER1_ENABLE_PULLUP","Title":"Encoder 1 enable pullup resistor","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>0"}
 #define ENCODER1_REVERSE_DIRECTION 0 		//{"Name":"ENCODER1_REVERSE_DIRECTION","Title":"Encoder 1 reverse direction","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>0"}
 #define ENCODER1_ENABLE_HALFSTEPS 0	 		//{"Name":"ENCODER1_ENABLE_HALFSTEPS","Title":"Encoder 1 steps mode","DefaultValue":"0","Type":"list","Condition":"ENABLED_ENCODERS_COUNT>=1","ListValues":"0,Full steps;1,Half steps"}
 
-#define ENCODER2_CLK_PIN 66 	//DIN_8		//{"Name":"ENCODER2_CLK_PIN","Title":"Encoder 2 output A (CLK) pin","DefaultValue":"11","Type":"pin;Encoder 2 CLK","Condition":"ENABLED_ENCODERS_COUNT>1"}
-#define ENCODER2_DT_PIN 68		//DIN_6		//{"Name":"ENCODER2_DT_PIN","Title":"Encoder 2 output B (DT) pin","DefaultValue":"12","Type":"pin;Encoder 2 DT","Condition":"ENABLED_ENCODERS_COUNT>1"}
+#define ENCODER2_CLK_PIN 20 	//PIN_GPIO_2		//{"Name":"ENCODER2_CLK_PIN","Title":"Encoder 2 output A (CLK) pin","DefaultValue":"11","Type":"pin;Encoder 2 CLK","Condition":"ENABLED_ENCODERS_COUNT>1"}
+#define ENCODER2_DT_PIN 21		//PIN_GPIO_3		//{"Name":"ENCODER2_DT_PIN","Title":"Encoder 2 output B (DT) pin","DefaultValue":"12","Type":"pin;Encoder 2 DT","Condition":"ENABLED_ENCODERS_COUNT>1"}
 #define ENCODER2_BUTTON_PIN 67	//DIN_7		//{"Name":"ENCODER2_BUTTON_PIN","Title":"Encoder 2 button (SW) pin","DefaultValue":"13","Type":"pin;Encoder 2 SWITCH","Condition":"ENABLED_ENCODERS_COUNT>1","Min":-1}
 #define ENCODER2_ENABLE_PULLUP 0	 		//{"Name":"ENCODER2_ENABLE_PULLUP","Title":"Encoder 2 enable pullup resistor","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>1"}
 #define ENCODER2_REVERSE_DIRECTION 0 		//{"Name":"ENCODER2_REVERSE_DIRECTION","Title":"Encoder 2 reverse direction","DefaultValue":"0","Type":"bool","Condition":"ENABLED_ENCODERS_COUNT>1"}
