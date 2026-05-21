@@ -99,7 +99,7 @@ GenF4.menu.pnum.BLACK_F407VE.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/S
    *                   USB Speed: Low/Full Speed 
    
    
- 5) Install Arduino Library: https://github.com/adafruit/Adafruit_TinyUSB_Arduino
+ 5) Install Arduino Library "Adafruit TinyUSB Library": https://github.com/adafruit/Adafruit_TinyUSB_Arduino
 	Install library add-on for STM32:
 	Step1: Download https://github.com/code-fiasco/TinyUSB-Arduino-STM32/tree/main
 	
@@ -115,3 +115,9 @@ GenF4.menu.pnum.BLACK_F407VE.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/S
 		   right prefix for your board. Each board entry now requires
 		   four lines — two to enable TinyUSB and two to enable
 		   "touch 1200" DFU upload.
+		   
+ 6) Install FastLED library. 
+    - Main Repo is here: https://github.com/FastLED/FastLED
+	  which has some built-in support for STM32 devices. but I added a board specific
+	  file(s) to the library in this repo: https://github.com/Sqwince/FastLED
+
